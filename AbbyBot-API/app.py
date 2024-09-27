@@ -1,10 +1,10 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 import requests
 import mysql.connector
 import os
 from dotenv import load_dotenv
 
-# Load variables from the .env file
+# Load variables from dotenv file
 load_dotenv()
 
 DISCORD_API_BASE_URL = "https://discord.com/api/v10"
@@ -87,6 +87,38 @@ def update_bot_info_in_db(bot_info):
     cursor.close()
     conn.close()
 
+
+# Function to get user server data from AbbyBot
+def get_user_server_data(user_id):
+    conn = get_db_connection("abbybot")  # Connect to the abbybot database
+    cursor = conn.cursor(dictionary=True)
+
+    # Query to get servers where the user is present, and if they are admin
+    query = """
+    SELECT s.guild_id, s.guild_name, s.owner_id, d.is_admin, p.privilege_name
+    FROM dashboard d
+    JOIN server_settings s ON d.guild_id = s.guild_id
+    LEFT JOIN privileges p ON d.user_privilege = p.id
+    WHERE d.user_id = %s AND d.is_active = 1;
+    """
+    
+    cursor.execute(query, (user_id,))
+    result = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    if result:
+        # Convert user_id to int before comparing to owner_id (BIGINT)
+        user_id_int = int(user_id)
+        
+        # Add is_owner logic here and convert to integer (0 or 1)
+        for server in result:
+            server['is_owner'] = 1 if server['owner_id'] == user_id_int else 0
+        return result
+    else:
+        return None
+
 # Main route to get the bot information
 @app.route('/bot-info', methods=['GET'])
 def bot_info():
@@ -109,6 +141,27 @@ def bot_info():
         })
     else:
         return jsonify({"error": "Could not retrieve bot information"}), 500
+    
+# Endpoint to retrieve servers and privileges for a user
+@app.route('/user-servers', methods=['GET'])
+def user_servers():
+    # Get user_id from the request
+    user_id = request.args.get('user_id')
+
+    if not user_id:
+        return jsonify({"error": "No user_id provided"}), 400
+
+    # Get the server and privileges data for the user
+    user_data = get_user_server_data(user_id)
+
+    if user_data:
+        return jsonify({
+            "user_id": user_id,
+            "servers": user_data
+        })
+    else:
+        return jsonify({"error": "No data found for this user"}), 404
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
