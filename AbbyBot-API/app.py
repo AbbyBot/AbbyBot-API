@@ -3,12 +3,17 @@ import requests
 import mysql.connector
 import os
 from dotenv import load_dotenv
+from flask import send_from_directory
 
 # Load variables from dotenv file
 load_dotenv()
 
 DISCORD_API_BASE_URL = "https://discord.com/api/v10"
 TOKEN = os.getenv('DISCORD_TOKEN')
+
+# Load the image folder path from the .env file
+IMAGE_FOLDER = os.getenv('IMAGE_FOLDER_PATH')
+BASE_URL = "http://localhost:5002"  # Change this to the real domain when deployed
 
 app = Flask(__name__)
 
@@ -21,9 +26,17 @@ def get_db_connection(database):
         database=database
     )
 
-# Get the number of servers from the "abbybot" database
+# Helper function to ensure proper URL construction
+def construct_url(filename):
+    """
+    Concatenate BASE_URL and the path, ensuring there is no double slash.
+    """
+    # The URL should be constructed using BASE_URL and the subdirectory where the images are.
+    return f"{BASE_URL.rstrip('/')}/images/{filename}"
+
+# Get the number of servers from the "AbbyBot_Rei" database
 def get_server_count():
-    conn = get_db_connection("abbybot")  # "abbybot" database
+    conn = get_db_connection("AbbyBot_Rei")  # "AbbyBot_Rei" database
     cursor = conn.cursor()
     cursor.execute("SELECT COUNT(DISTINCT guild_id) FROM dashboard WHERE is_active = 1;")
     count = cursor.fetchone()[0]
@@ -60,9 +73,9 @@ def get_bot_info_from_discord():
         print(f"Error fetching bot info: {response.status_code} {response.text}")
         return None
 
-# Insert or update data in bot_info in the "abbybot_wishlist" database
+# Insert or update data in bot_info in the "AbbyBot_Asuka" database
 def update_bot_info_in_db(bot_info):
-    conn = get_db_connection("abbybot_wishlist")  # "wishlist" database
+    conn = get_db_connection("AbbyBot_Asuka")  # "AbbyBot_Asuka" database
     cursor = conn.cursor()
 
     sql = """
@@ -82,24 +95,22 @@ def update_bot_info_in_db(bot_info):
         bot_info['version'], 
         bot_info['server_count']
     ))
-    
     conn.commit()
     cursor.close()
     conn.close()
 
-
 # Function to get user server data from AbbyBot
 def get_user_server_data(user_id):
-    conn = get_db_connection("abbybot")  # Connect to the abbybot database
+    conn = get_db_connection("AbbyBot_Rei")  
     cursor = conn.cursor(dictionary=True)
 
-    # Query to get servers where the user is present, and if they are admin
     query = """
-    SELECT s.guild_id, s.guild_name, s.owner_id, d.is_admin, p.privilege_name
+    SELECT s.guild_id, s.guild_name, s.owner_id, d.is_admin, s.guild_icon_url, s.guild_icon_last_updated, p.privilege_name
     FROM dashboard d
     JOIN server_settings s ON d.guild_id = s.guild_id
-    LEFT JOIN privileges p ON d.user_privilege = p.id
-    WHERE d.user_id = %s AND d.is_active = 1;
+    JOIN user_profile up ON d.user_profile_id = up.id
+    LEFT JOIN privileges p ON up.user_privilege = p.id
+    WHERE up.user_id = %s;
     """
     
     cursor.execute(query, (user_id,))
@@ -109,49 +120,69 @@ def get_user_server_data(user_id):
     conn.close()
 
     if result:
-        # Convert user_id to int before comparing to owner_id (BIGINT)
         user_id_int = int(user_id)
-        
-        # Add is_owner logic here and convert to integer (0 or 1)
+
         for server in result:
             server['is_owner'] = 1 if server['owner_id'] == user_id_int else 0
+            # Construct the full URL for the server icon using the file name
+            if server['guild_icon_url']:
+                server['guild_icon_url'] = construct_url(server['guild_icon_url'])
+
         return result
     else:
         return None
 
+
+# Endpoint to serve images from the absolute path defined in the .env file
+@app.route('/images/<path:filename>')
+def serve_image(filename):
+    # Verify the full path from where the images are served, without adding guild_images again
+    full_image_path = os.path.join(IMAGE_FOLDER, filename)
+    print(f"Looking for the file in: {full_image_path}")
+    
+    # Use send_from_directory to serve the file from the correct directory
+    return send_from_directory(IMAGE_FOLDER, filename)
+
+
+
 # Main route to get the bot information
 @app.route('/bot-info', methods=['GET'])
 def bot_info():
-    # Get the bot information from the Discord API
-    discord_info = get_bot_info_from_discord()
+    conn = get_db_connection("AbbyBot_Asuka")
+    cursor = conn.cursor(dictionary=True)
 
-    if discord_info:
-        # Update or insert the information in the "wishlist" database
-        update_bot_info_in_db(discord_info)
-        
+    # Query to get the bot information from the bot_info table
+    query = "SELECT * FROM bot_info LIMIT 1"
+    cursor.execute(query)
+    bot_info = cursor.fetchone()
+
+    cursor.close()
+    conn.close()
+
+    if bot_info:
         return jsonify({
-            "bot_id": discord_info["bot_id"],
-            "bot_name": discord_info["bot_name"],
-            "discriminator": discord_info["discriminator"],
-            "avatar_url": discord_info["avatar_url"],
-            "banner_url": discord_info["banner_url"],
-            "server_count": discord_info["server_count"],
-            "version": discord_info["version"],
-            "status": "online"
+            "bot_id": bot_info["bot_id"],
+            "bot_name": bot_info["bot_name"],
+            "discriminator": bot_info["discriminator"],
+            "avatar_url": bot_info["avatar_url"],
+            "banner_url": bot_info["banner_url"],
+            "server_count": bot_info["server_count"],
+            "version": bot_info["version"]
         })
     else:
-        return jsonify({"error": "Could not retrieve bot information"}), 500
-    
+        return jsonify({"error": "No bot information found"}), 404
+
 # Endpoint to retrieve servers and privileges for a user
 @app.route('/user-servers', methods=['GET'])
 def user_servers():
-    # Get user_id from the request
+
+    # Get user_id from request
     user_id = request.args.get('user_id')
 
     if not user_id:
         return jsonify({"error": "No user_id provided"}), 400
 
-    # Get the server and privileges data for the user
+    # Get user data
     user_data = get_user_server_data(user_id)
 
     if user_data:
@@ -164,4 +195,4 @@ def user_servers():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=True, host='127.0.0.1', port=5002)
