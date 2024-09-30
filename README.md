@@ -1,7 +1,16 @@
 
-# AbbyBot API
 
-This API is part of the AbbyBot project and serves data related to Discord bot servers, users, and bot information.
+![AbbyBot-Api](https://github.com/user-attachments/assets/d17a12fc-bb64-4b7c-88dc-529505f1a5c6)
+
+
+- This API is part of the AbbyBot project and serves data related to Discord bot servers, users, and bot information.
+
+![Python](https://img.shields.io/badge/Python-3.10-blue?logo=python&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-v8.0-orange?logo=mysql&logoColor=white)
+![Flask](https://img.shields.io/badge/Flask-v2.1-black?logo=flask&logoColor=white)
+![Dotenv](https://img.shields.io/badge/Dotenv-Config-green?logo=dotenv&logoColor=white)
+
+
 
 ## Requirements
 
