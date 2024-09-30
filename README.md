@@ -103,9 +103,9 @@ Returns information about the user's profile, including their Discord username, 
 ```json
 {
   "discord_username": "User123",
-  "account_created_at": "2020-01-01",
+  "account_created_at": "Sat, 14 Jul 2018 23:00:44 GMT",
   "user_id": "987654321",
-  "user_birthday": "No data available",
+  "user_birthday": "1986-08-12",
   "servers_shared": 3,
   "abbybot_theme": "Dark Theme"
 }
@@ -139,7 +139,7 @@ Returns the list of all users (dashboard) on a server where AbbyBot is, bringing
       "rizz",
       "gyatt"
     ],
-    "Birthday Date": "Tue, 12 Aug 1986 00:00:00 GMT"
+    "Birthday Date": "1986-08-12"
   },
   {
     "Username": "reiayanami",
@@ -159,7 +159,7 @@ Returns the list of all users (dashboard) on a server where AbbyBot is, bringing
     "Server roles": [
       "abbybot_dev"
     ],
-    "Birthday Date": "Tue, 04 Dec 2001 00:00:00 GMT"
+    "Birthday Date": "2001-12-04"
   }
 ]
 

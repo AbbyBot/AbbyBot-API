@@ -130,33 +130,7 @@ def get_user_server_data(user_id):
     else:
         return None
 
-# Function to get user profile info from "AbbyBot_Rei"
-def get_user_info(user_id):
-    conn = get_db_connection("AbbyBot_Rei")  
-    cursor = conn.cursor(dictionary=True)
-    query = """
-        SELECT 
-            up.user_username AS discord_username, 
-            up.user_birthday AS birthday,
-            up.user_id, 
-            up.account_created_at,  
-            COALESCE(p.privilege_name, 'No privilege') AS privilege,
-            (SELECT COUNT(DISTINCT guild_id) 
-            FROM dashboard 
-            WHERE user_profile_id = up.id) AS servers_shared,
-            t.title AS abbybot_theme
-        FROM user_profile up
-        LEFT JOIN privileges p ON up.user_privilege = p.id
-        LEFT JOIN AbbyBot_Themes t ON up.theme_id = t.id
-        WHERE up.user_id = %s;
-    """
-    cursor.execute(query, (user_id,))
-    result = cursor.fetchone()
 
-    cursor.close()
-    conn.close()
-
-    return result
 
 # Endpoint to serve images from the absolute path defined in the .env file
 @app.route('/images/<path:filename>')
@@ -212,6 +186,35 @@ def user_servers():
         })
     else:
         return jsonify({"error": "No data found for this user"}), 404
+    
+
+# Function to get user profile info from "AbbyBot_Rei"
+def get_user_info(user_id):
+    conn = get_db_connection("AbbyBot_Rei")  
+    cursor = conn.cursor(dictionary=True)
+    query = """
+        SELECT 
+            up.user_username AS discord_username, 
+            up.user_birthday AS birthday,
+            up.user_id, 
+            up.account_created_at,  
+            COALESCE(p.privilege_name, 'No privilege') AS privilege,
+            (SELECT COUNT(DISTINCT guild_id) 
+            FROM dashboard 
+            WHERE user_profile_id = up.id) AS servers_shared,
+            t.title AS abbybot_theme
+        FROM user_profile up
+        LEFT JOIN privileges p ON up.user_privilege = p.id
+        LEFT JOIN AbbyBot_Themes t ON up.theme_id = t.id
+        WHERE up.user_id = %s;
+    """
+    cursor.execute(query, (user_id,))
+    result = cursor.fetchone()
+
+    cursor.close()
+    conn.close()
+
+    return result
 
 # Endpoint to retrieve user profile information
 @app.route('/user-info', methods=['GET'])
@@ -225,11 +228,18 @@ def user_info():
     user_data = get_user_info(user_id)
 
     if user_data:
+        # Handle birthday formatting to 'YYYY-MM-DD' or null if not available
+        birthday = user_data["birthday"]
+        if birthday:
+            birthday = birthday.strftime('%Y-%m-%d')  # Format to 'YYYY-MM-DD'
+        else:
+            birthday = None  # Set as None if not defined
+
         return jsonify({
             "discord_username": user_data["discord_username"],
             "account_created_at": user_data["account_created_at"] or "No data available",
             "user_id": user_data["user_id"],
-            "user_birthday": user_data["birthday"] or "No data available",
+            "user_birthday": birthday,  # Formatted birthday
             "servers_shared": user_data["servers_shared"],
             "abbybot_theme": user_data["abbybot_theme"],
         })
@@ -282,6 +292,14 @@ def get_server_dashboard():
             dashboard = {}
             for row in result:
                 user_id = row[3]  # Index 3 is 'User ID'
+
+                # Handle Birthday Date formatting to 'YYYY-MM-DD' or set it as None
+                birthday_date = row[5]  # Index 5 is 'Birthday Date'
+                if birthday_date:
+                    birthday_date = birthday_date.strftime('%Y-%m-%d')  # Format to 'YYYY-MM-DD'
+                else:
+                    birthday_date = None  # Set as None if not defined
+                
                 if user_id not in dashboard:
                     dashboard[user_id] = {
                         'username': row[0],  # Index 0 is 'Username'
@@ -289,7 +307,7 @@ def get_server_dashboard():
                         'user_type': row[2],  # Index 2 is 'User type'
                         'user_id': row[3],  # Index 3 is 'User ID'
                         'server_roles': [],
-                        'birthday_date': row[5]  # Index 5 is 'Birthday Date'
+                        'birthday_date': birthday_date  # Formatted 'Birthday Date'
                     }
                 if row[4]:  # Index 4 is 'server_roles'
                     dashboard[user_id]['server_roles'].append(row[4])
@@ -298,6 +316,7 @@ def get_server_dashboard():
 
     finally:
         conn.close()
+
 
 
 if __name__ == '__main__':
