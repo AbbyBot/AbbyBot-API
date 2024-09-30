@@ -193,7 +193,7 @@ Updates the birthday of a user in the AbbyBot dashboard. If the user exists, the
 ```
 
 
-### 6. Update AbbyBot Theme
+### 7. Update AbbyBot Theme
 
 **URL:** `/update-abbybot_theme`  
 **Method:** `POST`  
