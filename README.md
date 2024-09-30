@@ -165,6 +165,77 @@ Returns the list of all users (dashboard) on a server where AbbyBot is, bringing
 
 ```
 
+### 6. Update Birthday
+
+**URL:** `/update-birthday`  
+**Method:** `POST`  
+**Parameters:**
+- `user_id`: The ID of the user whose birthday needs to be updated (required).
+- `birthday_date`: The new birthday date in `YYYY-MM-DD` format (required).
+
+Updates the birthday of a user in the AbbyBot dashboard. If the user exists, their birthday is updated to the new provided date.
+
+#### Example Request:
+```json
+{
+  "user_id": "123456789012345678",
+  "birthday_date": "1992-05-14"
+}
+
+```
+
+#### Example Response:
+```json
+{
+  "success": "Birthday updated for user 123456789012345678"
+}
+
+```
+
+
+### 6. Update AbbyBot Theme
+
+**URL:** `/update-abbybot_theme`  
+**Method:** `POST`  
+**Parameters:**
+- `user_id`: The ID of the user whose birthday needs to be updated (required).
+- `theme_id`: The new theme ID to be applied (required).
+
+Updates the birthday of a user in the AbbyBot dashboard. If the user exists, their birthday is updated to the new provided date.
+
+#### Example Request:
+```json
+{
+  "user_id": "123456789012345678",
+  "theme_id": 2
+}
+
+```
+
+#### Example Response (Theme Updated):
+```json
+{
+  "success": "AbbyBot_theme updated for user 123456789012345678"
+}
+
+
+```
+#### Example Response (No Update Needed):
+```json
+{
+  "info": "No update needed, the theme is already set to this value"
+}
+
+
+```
+#### Example Response (No User Found):
+```json
+{
+  "info": "No user found with the provided user_id"
+}
+
+
+```
 
 ## Notes
 

@@ -318,6 +318,114 @@ def get_server_dashboard():
         conn.close()
 
 
+from datetime import datetime
+
+# Function to update the birthday of a user in "AbbyBot_Rei"
+def update_user_birthday(user_id, birthday):
+    conn = get_db_connection("AbbyBot_Rei")
+    cursor = conn.cursor()
+
+    try:
+        query = """
+            UPDATE user_profile 
+            SET user_birthday = %s 
+            WHERE user_id = %s;
+        """
+        cursor.execute(query, (birthday, user_id))
+        conn.commit()  # Commit the transaction
+        return cursor.rowcount  # Return number of affected rows
+
+    finally:
+        cursor.close()
+        conn.close()
+
+# Endpoint to update the user's birthday
+@app.route('/update-birthday', methods=['POST'])
+def update_birthday():
+    # Get data from the request
+    user_id = request.json.get('user_id')
+    birthday = request.json.get('birthday')
+
+    # Validate that both user_id and birthday are provided
+    if not user_id or not birthday:
+        return jsonify({"error": "Missing user_id or birthday"}), 400
+
+    # Validate the birthday format (YYYY-MM-DD)
+    try:
+        # Parse the date to ensure it's in the correct format
+        birthday_date = datetime.strptime(birthday, '%Y-%m-%d').date()
+    except ValueError:
+        return jsonify({"error": "Invalid birthday format. Use YYYY-MM-DD."}), 400
+
+    # Update the user's birthday in the database
+    rows_affected = update_user_birthday(user_id, birthday_date)
+
+    if rows_affected > 0:
+        return jsonify({"success": f"Birthday updated for user {user_id}"}), 200
+    else:
+        return jsonify({"error": "No user found with the provided user_id"}), 404
+
+def get_current_theme(user_id):
+    conn = get_db_connection("AbbyBot_Rei")
+    cursor = conn.cursor()
+    
+    try:
+        query = "SELECT theme_id FROM user_profile WHERE user_id = %s;"
+        cursor.execute(query, (user_id,))
+        result = cursor.fetchone()
+        return result[0] if result else None  # Return the current theme_id if exists
+    finally:
+        cursor.close()
+        conn.close()
+
+
+
+# Function to update the birthday of a user in "AbbyBot_Rei"
+def update_abbybot_theme(user_id, theme_id):
+    conn = get_db_connection("AbbyBot_Rei")
+    cursor = conn.cursor()
+
+    try:
+        # Check if the user already has this theme_id
+        current_theme = get_current_theme(user_id)
+        if current_theme == theme_id:
+            return -1  # Indicating that no update is needed (same theme)
+
+        # Proceed with the update
+        query = """
+            UPDATE user_profile 
+            SET theme_id = %s 
+            WHERE user_id = %s;
+        """
+        cursor.execute(query, (theme_id, user_id))
+        conn.commit()  # Commit the transaction
+        return cursor.rowcount  # Return number of affected rows
+
+    finally:
+        cursor.close()
+        conn.close()
+
+# Endpoint to update the user's AbbyBot_Theme (dashboard skin)
+@app.route('/update-abbybot_theme', methods=['POST'])
+def update_theme():
+    # Get data from the request
+    user_id = request.json.get('user_id')
+    theme_id = request.json.get('theme_id')
+
+    # Validate that both user_id and theme_id are provided
+    if not user_id or not theme_id:
+        return jsonify({"error": "Missing user_id or theme_id"}), 400
+
+    # Update the user's abbybot_theme in the database
+    rows_affected = update_abbybot_theme(user_id, theme_id)
+
+    if rows_affected == -1:
+        return jsonify({"info": "No update needed, the theme is already set to this value"}), 200
+    elif rows_affected > 0:
+        return jsonify({"success": f"AbbyBot_theme updated for user {user_id}"}), 200
+    else:
+        return jsonify({"error": "No user found with the provided user_id"}), 404
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='127.0.0.1', port=5002)
