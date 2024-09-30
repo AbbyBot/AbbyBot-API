@@ -118,6 +118,54 @@ Returns information about the user's profile, including their Discord username, 
 
 Serves images stored in the folder specified by the `IMAGE_FOLDER_PATH` environment variable. Images are accessed by their filename.
 
+### 5. Get Server Dashboard
+
+**URL:** `/server-dashboard`  
+**Method:** `GET`  
+**Parameters:**
+- `guild_id`: Discord Server ID (required)
+
+Returns the list of all users (dashboard) on a server where AbbyBot is, bringing data such as their nicknames, user types (user, admin, owner), their user IDs, birthdays and server roles..
+
+#### Example Response:
+```json
+[
+  {
+    "Username": "katsuragimisato",
+    "Nickname in server": "Misato Katsuragi",
+    "User type": "Owner",
+    "User ID": "123456789012345678",
+    "Server roles": [
+      "rizz",
+      "gyatt"
+    ],
+    "Birthday Date": "Tue, 12 Aug 1986 00:00:00 GMT"
+  },
+  {
+    "Username": "reiayanami",
+    "Nickname in server": "Rei Ayanami",
+    "User type": "Admin",
+    "User ID": "876543210987654321",
+    "Server roles": [
+      "fortnite-player"
+    ],
+    "Birthday Date": null
+  },
+  {
+    "Username": "asukalangleyshyru",
+    "Nickname in server": "Asuka Langley Sohryu",
+    "User type": "User",
+    "User ID": "367397873597284352",
+    "Server roles": [
+      "abbybot_dev"
+    ],
+    "Birthday Date": "Tue, 04 Dec 2001 00:00:00 GMT"
+  }
+]
+
+```
+
+
 ## Notes
 
 - Ensure your image paths are correctly set up in the database. The `IMAGE_FOLDER_PATH` should contain the images referenced in the API.

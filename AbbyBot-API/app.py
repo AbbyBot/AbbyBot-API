@@ -4,6 +4,7 @@ import mysql.connector
 import os
 from dotenv import load_dotenv
 from flask import send_from_directory
+from flask_cors import CORS
 
 # Load environment variables from the .env file
 load_dotenv()
@@ -16,6 +17,8 @@ IMAGE_FOLDER = os.getenv('IMAGE_FOLDER_PATH')
 BASE_URL = "http://localhost:5002"  # Change this to the real domain when deployed
 
 app = Flask(__name__)
+
+CORS(app)
 
 # Function to connect to the database
 def get_db_connection(database):
@@ -232,6 +235,69 @@ def user_info():
         })
     else:
         return jsonify({"error": "No data found for this user"}), 404
+
+# Get all dashboard for a server ()
+@app.route('/server-dashboard', methods=['GET'])
+def get_server_dashboard():
+    # Get guild_id from query parameters
+    guild_id = request.args.get('guild_id')
+
+    # Check if guild_id is provided
+    if not guild_id:
+        return jsonify({'error': 'Missing required parameter: guild_id'}), 400
+    
+    conn = get_db_connection("AbbyBot_Rei")
+    
+    try:
+        with conn.cursor() as cursor:
+            query = """
+                    SELECT 
+                        up.user_username AS 'Username',
+                        d.user_server_nickname AS 'Nickname in server',
+                        CASE 
+                            WHEN ss.owner_id = up.user_id THEN 'Owner'  -- Prioritize "Owner"
+                            WHEN d.is_admin = 1 THEN 'Admin'
+                            ELSE 'User'
+                        END AS 'User type',
+                        CAST(up.user_id AS CHAR) AS 'User ID',
+                        ur.role_name AS 'Server roles',
+                        up.user_birthday AS 'Birthday Date'  
+                    FROM 
+                        dashboard d
+                    JOIN 
+                        user_profile up ON d.user_profile_id = up.id
+                    LEFT JOIN 
+                        user_roles ur ON ur.user_profile_id = up.id AND ur.guild_id = d.guild_id
+                    JOIN 
+                        server_settings ss ON ss.guild_id = d.guild_id
+                    WHERE 
+                        d.guild_id = %s
+                    ORDER BY 
+                        up.user_username, ur.role_name;
+            """
+            cursor.execute(query, (guild_id,))
+            result = cursor.fetchall()
+
+            # Creating a structure to group roles for each user
+            dashboard = {}
+            for row in result:
+                user_id = row[3]  # Index 3 is 'User ID'
+                if user_id not in dashboard:
+                    dashboard[user_id] = {
+                        'username': row[0],  # Index 0 is 'Username'
+                        'nickname in server': row[1],  # Index 1 is 'Nickname in server'
+                        'user_type': row[2],  # Index 2 is 'User type'
+                        'user_id': row[3],  # Index 3 is 'User ID'
+                        'server_roles': [],
+                        'birthday_date': row[5]  # Index 5 is 'Birthday Date'
+                    }
+                if row[4]:  # Index 4 is 'server_roles'
+                    dashboard[user_id]['server_roles'].append(row[4])
+
+            return jsonify(list(dashboard.values()))
+
+    finally:
+        conn.close()
 
 
 if __name__ == '__main__':
