@@ -426,6 +426,67 @@ def update_theme():
     else:
         return jsonify({"error": "No user found with the provided user_id"}), 404
 
+def get_current_language(guild_id):
+    conn = get_db_connection("AbbyBot_Rei")
+    cursor = conn.cursor()
+    
+    try:
+        # Asegúrate de que estás consultando la tabla correcta
+        query = "SELECT guild_language FROM server_settings WHERE guild_id = %s;"
+        cursor.execute(query, (guild_id,))
+        result = cursor.fetchone()
+        return result[0] if result else None 
+    finally:
+        cursor.close()
+        conn.close()
+
+
+# Function to update the language of a guild in "AbbyBot_Rei"
+def update_language(guild_id, guild_language):
+    conn = get_db_connection("AbbyBot_Rei")
+    cursor = conn.cursor()
+
+    try:
+        # Check if the guild already has this language
+        current_language = get_current_language(guild_id)
+        if current_language == guild_language:
+            return -1  # Indicating that no update is needed (same language)
+
+        # Proceed with the update
+        query = """
+            UPDATE server_settings 
+            SET guild_language = %s 
+            WHERE guild_id = %s;
+        """
+        cursor.execute(query, (guild_language, guild_id))  # Note the correct parameter order
+        conn.commit()  # Commit the transaction
+        return cursor.rowcount  # Return number of affected rows
+
+    finally:
+        cursor.close()
+        conn.close()
+
+
+
+# Endpoint to update AbbyBot language in a server 
+@app.route('/update-language', methods=['POST'])
+def update_guild_language_route():
+
+    # Get data from the request
+    guild_id = request.json.get('guild_id')
+    language_id = request.json.get('language_id')
+    
+    # Update guild_language
+    rows_affected = update_language(guild_id, language_id)
+
+    if rows_affected == -1:
+        return jsonify({"info": "No update needed, the language is already set"}), 200
+    elif rows_affected > 0:
+        return jsonify({"success": f"Language updated for guild {guild_id}"}), 200
+    else:
+        return jsonify({"error": "No guild found with the provided guild_id"}), 404
+
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='127.0.0.1', port=5002)

@@ -246,6 +246,50 @@ Updates the birthday of a user in the AbbyBot dashboard. If the user exists, the
 
 ```
 
+### 8. Update AbbyBot Language
+
+**URL:** `/update-language`  
+**Method:** `POST`  
+**Parameters:**
+- `guild_id`: The ID of the guild who the language needs to be updated (required).
+- `language_id`: The new language ID to be applied (required).
+
+Updates the language of a guild in the AbbyBot dashboard. If the guild exists, their language is updated to the new provided date.
+
+#### Example Request:
+```json
+{
+  "guild_id": "123456789012345678",
+  "language_id": 2
+}
+
+```
+
+#### Example Response (Language Updated):
+```json
+{
+  "success": "Language updated for guild 123456789012345678"
+}
+
+
+```
+#### Example Response (No Update Needed):
+```json
+{
+  "info": "No update needed, the language is already set"
+}
+
+
+```
+#### Example Response (No Guild Found):
+```json
+{
+  "info": "No guild found with the provided guild_id"
+}
+
+
+```
+
 ## Notes
 
 - Ensure your image paths are correctly set up in the database. The `IMAGE_FOLDER_PATH` should contain the images referenced in the API.
