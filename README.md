@@ -357,9 +357,9 @@ Updates the language of a guild in the AbbyBot dashboard. If the guild exists, t
 **Method:** `POST`  
 **Parameters:**
 - `guild_id`: The ID of the guild who the language needs to be updated (required).
-- `activated_events`: The value to enable/disable AbbyBot automatic events, 1 = activated, 2 = deactivated (required).
+- `activated_events`: The value to enable/disable AbbyBot automatic events, 1 = activated, 0 = deactivated (required).
 
-Updates the language of a guild in the AbbyBot dashboard. If the guild exists, their language is updated to the new provided date.
+Update the automatic event trigger for a guild in AbbyBot. If the guild exists, its events are updated to the new value provided.
 
 #### Example Request:
 ```json
@@ -414,6 +414,85 @@ Updates the language of a guild in the AbbyBot dashboard. If the guild exists, t
 ```json
 {
   "info": "No update needed, the activated_events value is already set",
+  "status_code": 200
+}
+
+
+```
+#### Example Response (No Guild Found):
+```json
+{
+  "info": "No guild found with the provided guild_id",
+  "status_code": 404
+}
+
+
+```
+
+
+### 10. Update AbbyBot Birthday events
+
+**URL:** `/toggle-birthday-event`  
+**Method:** `POST`  
+**Parameters:**
+- `guild_id`: The ID of the guild who the language needs to be updated (required).
+- `activated_birthday`: The value to enable/disable AbbyBot birthday events, 1 = activated, 0 = deactivated (required).
+
+Update the birthday event trigger for a guild in AbbyBot. If the guild exists, its birthday  events are updated to activated/deactivated.
+
+#### Example Request:
+```json
+{
+  "guild_id": "123456789012345678",
+  "activated_birthday": 1
+}
+
+```
+
+#### Example Response (Activated birthday):
+```json
+{
+  "success": "Activated auto events for guild 123456789012345678",
+  "status_code": 200
+}
+
+
+```
+
+#### Example Response (Deactivated birthday):
+```json
+{
+  "success": "Deactivated auto events for guild 123456789012345678",
+  "status_code": 200
+}
+
+
+```
+
+#### Example Response (Value is greater than one or less than zero):
+```json
+{
+  "error": "Invalid value for activated_birthday. It must be 0 or 1.",
+  "status_code": 400
+}
+
+
+```
+
+#### Example Response (activated_birthday is not a number):
+```json
+{
+  "error": "Invalid value for activated_birthday. It must be a number (0 or 1).",
+  "status_code": 400
+}
+
+
+```
+
+#### Example Response (No Update Needed):
+```json
+{
+  "info": "No update needed, the activated_birthday value is already set",
   "status_code": 200
 }
 

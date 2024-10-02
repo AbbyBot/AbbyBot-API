@@ -181,7 +181,6 @@ def user_servers():
     if user_data and user_info:
         return jsonify({
             "user_id": user_id,
-            "privilege_name": user_info["privilege"],
             "servers": user_data
         })
     else:
@@ -241,6 +240,7 @@ def user_info():
             "user_id": user_data["user_id"],
             "user_birthday": birthday,  # Formatted birthday
             "servers_shared": user_data["servers_shared"],
+            "privilege": user_data["privilege"],
             "abbybot_theme": user_data["abbybot_theme"],
         })
     else:
@@ -579,7 +579,7 @@ def toggle_automatic_event():
         return jsonify({"error": "Invalid value for activated_events. It must be 0 or 1.", "status_code": 400}), 400
 
     # Update events
-    rows_affected = toggle_events(guild_id, activated_events)
+    rows_affected = toggle_birthday(guild_id, activated_events)
 
     if rows_affected == -1:
         return jsonify({"info": "No update needed, the activated_events value is already set", "status_code": 200}), 200
@@ -592,7 +592,73 @@ def toggle_automatic_event():
         return jsonify({"error": "No guild found with the provided guild_id", "status_code": 404}), 404
 
 
+# Function to activate/deactivate automatic events of a guild in "AbbyBot_Rei"
+def toggle_birthday(guild_id, activated_birthday):
+    conn = get_db_connection("AbbyBot_Rei")
+    cursor = conn.cursor()
 
+    try:
+        
+        current_events = get_current_toggle_birthday(guild_id)
+        if current_events == activated_birthday:
+            return -1  # Indicating that no update is needed (same value)
+
+        # Proceed with the update
+        query = """
+            UPDATE server_settings 
+            SET activated_birthday = %s 
+            WHERE guild_id = %s;
+        """
+        cursor.execute(query, (activated_birthday, guild_id))  # Note the correct parameter order
+        conn.commit()  # Commit the transaction
+        return cursor.rowcount  # Return number of affected rows
+
+    finally:
+        cursor.close()
+        conn.close()
+
+def get_current_toggle_birthday(guild_id):
+    conn = get_db_connection("AbbyBot_Rei")
+    cursor = conn.cursor()
+    
+    try:
+        query = "SELECT activated_birthday FROM server_settings WHERE guild_id = %s;"
+        cursor.execute(query, (guild_id,))
+        result = cursor.fetchone()
+        return result[0] if result else None 
+    finally:
+        cursor.close()
+        conn.close()
+
+
+# Endpoint to activate/deactivate birhtday channel in a server 
+@app.route('/toggle-birthday-event', methods=['POST'])
+def toggle_auto_birthday():
+    # Get data from the request
+    guild_id = request.json.get('guild_id')
+    activated_birthday = request.json.get('activated_birthday')
+    
+    # Check if activated_birthday is not a number
+    if not isinstance(activated_birthday, int):
+        return jsonify({"error": "Invalid value for activated_birthday. It must be a number (0 or 1).", "status_code": 400}), 400
+  
+    
+    # Check if activated_events is valid (should be 0 or 1)
+    if activated_birthday not in [0, 1]:
+        return jsonify({"error": "Invalid value for activated_birthday. It must be 0 or 1.", "status_code": 400}), 400
+
+    # Update events
+    rows_affected = toggle_birthday(guild_id, activated_birthday)
+
+    if rows_affected == -1:
+        return jsonify({"info": "No update needed, the activated_events value is already set", "status_code": 200}), 200
+    elif rows_affected > 0:
+        if activated_birthday == 1:
+            return jsonify({"success": f"Activated birthday for guild {guild_id}", "status_code": 200}), 200
+        else:
+            return jsonify({"success": f"Deactivated birthday for guild {guild_id}", "status_code": 200}), 200
+    else:
+        return jsonify({"error": "No guild found with the provided guild_id", "status_code": 404}), 404
 
 
 if __name__ == '__main__':
