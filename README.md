@@ -351,6 +351,85 @@ Updates the language of a guild in the AbbyBot dashboard. If the guild exists, t
 
 ```
 
+### 9. Update AbbyBot Auto events
+
+**URL:** `/toggle_automatic_events`  
+**Method:** `POST`  
+**Parameters:**
+- `guild_id`: The ID of the guild who the language needs to be updated (required).
+- `activated_events`: The value to enable/disable AbbyBot automatic events, 1 = activated, 2 = deactivated (required).
+
+Updates the language of a guild in the AbbyBot dashboard. If the guild exists, their language is updated to the new provided date.
+
+#### Example Request:
+```json
+{
+  "guild_id": "123456789012345678",
+  "activated_events": 1
+}
+
+```
+
+#### Example Response (Activated events):
+```json
+{
+  "success": "Activated auto events for guild 123456789012345678",
+  "status_code": 200
+}
+
+
+```
+
+#### Example Response (Deactivated events):
+```json
+{
+  "success": "Deactivated auto events for guild 123456789012345678",
+  "status_code": 200
+}
+
+
+```
+
+#### Example Response (Value is greater than one or less than zero):
+```json
+{
+  "error": "Invalid value for activated_events. It must be 0 or 1.",
+  "status_code": 400
+}
+
+
+```
+
+#### Example Response (activated_events is not a number):
+```json
+{
+  "error": "Invalid value for activated_events. It must be a number (0 or 1).",
+  "status_code": 400
+}
+
+
+```
+
+#### Example Response (No Update Needed):
+```json
+{
+  "info": "No update needed, the activated_events value is already set",
+  "status_code": 200
+}
+
+
+```
+#### Example Response (No Guild Found):
+```json
+{
+  "info": "No guild found with the provided guild_id",
+  "status_code": 404
+}
+
+
+```
+
+
 ## Notes
 
 - Ensure your image paths are correctly set up in the database. The `IMAGE_FOLDER_PATH` should contain the images referenced in the API.

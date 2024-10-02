@@ -467,7 +467,6 @@ def get_current_language(guild_id):
     cursor = conn.cursor()
     
     try:
-        # Asegúrate de que estás consultando la tabla correcta
         query = "SELECT guild_language FROM server_settings WHERE guild_id = %s;"
         cursor.execute(query, (guild_id,))
         result = cursor.fetchone()
@@ -520,6 +519,78 @@ def update_guild_language_route():
         return jsonify({"success": f"Language updated for guild {guild_id}", "status_code": 200}), 200
     else:
         return jsonify({"error": "No guild found with the provided guild_id", "status_code": 404}), 404
+
+
+def get_current_event_value(guild_id):
+    conn = get_db_connection("AbbyBot_Rei")
+    cursor = conn.cursor()
+    
+    try:
+        query = "SELECT activated_events FROM server_settings WHERE guild_id = %s;"
+        cursor.execute(query, (guild_id,))
+        result = cursor.fetchone()
+        return result[0] if result else None 
+    finally:
+        cursor.close()
+        conn.close()
+
+
+# Function to activate/deactivate automatic events of a guild in "AbbyBot_Rei"
+def toggle_events(guild_id, activated_events):
+    conn = get_db_connection("AbbyBot_Rei")
+    cursor = conn.cursor()
+
+    try:
+        # Check if the guild already has this language
+        current_events = get_current_event_value(guild_id)
+        if current_events == activated_events:
+            return -1  # Indicating that no update is needed (same value)
+
+        # Proceed with the update
+        query = """
+            UPDATE server_settings 
+            SET activated_events = %s 
+            WHERE guild_id = %s;
+        """
+        cursor.execute(query, (activated_events, guild_id))  # Note the correct parameter order
+        conn.commit()  # Commit the transaction
+        return cursor.rowcount  # Return number of affected rows
+
+    finally:
+        cursor.close()
+        conn.close()
+
+
+
+# Endpoint to activate/deactivate automatic events in a server 
+@app.route('/toggle_automatic_events', methods=['POST'])
+def toggle_automatic_event():
+    # Get data from the request
+    guild_id = request.json.get('guild_id')
+    activated_events = request.json.get('activated_events')
+    
+    # Check if activated_events is not a number
+    if not isinstance(activated_events, int):
+        return jsonify({"error": "Invalid value for activated_events. It must be a number (0 or 1).", "status_code": 400}), 400
+  
+    
+    # Check if activated_events is valid (should be 0 or 1)
+    if activated_events not in [0, 1]:
+        return jsonify({"error": "Invalid value for activated_events. It must be 0 or 1.", "status_code": 400}), 400
+
+    # Update events
+    rows_affected = toggle_events(guild_id, activated_events)
+
+    if rows_affected == -1:
+        return jsonify({"info": "No update needed, the activated_events value is already set", "status_code": 200}), 200
+    elif rows_affected > 0:
+        if activated_events == 1:
+            return jsonify({"success": f"Activated auto events for guild {guild_id}", "status_code": 200}), 200
+        else:
+            return jsonify({"success": f"Deactivated auto events for guild {guild_id}", "status_code": 200}), 200
+    else:
+        return jsonify({"error": "No guild found with the provided guild_id", "status_code": 404}), 404
+
 
 
 
