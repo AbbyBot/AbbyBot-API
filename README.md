@@ -262,7 +262,7 @@ or
 **URL:** `/update-abbybot_theme`  
 **Method:** `POST`  
 **Parameters:**
-- `user_id`: The ID of the user whose birthday needs to be updated (required).
+- `user_id`: The ID of the user whose AbbyBot theme needs to be updated (required).
 - `theme_id`: The new theme ID to be applied (required).
 
 Updates the birthday of a user in the AbbyBot dashboard. If the user exists, their birthday is updated to the new provided date.
