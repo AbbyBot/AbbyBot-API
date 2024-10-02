@@ -320,8 +320,23 @@ def get_server_dashboard():
 
 from datetime import datetime
 
+# Function to get the current birthday of a user
+def get_current_birthday(user_id):
+    conn = get_db_connection("AbbyBot_Rei")
+    cursor = conn.cursor()
+
+    try:
+        query = "SELECT user_birthday FROM user_profile WHERE user_id = %s;"
+        cursor.execute(query, (user_id,))
+        result = cursor.fetchone()
+        return result[0] if result else None  # Return the current birthday if exists
+    finally:
+        cursor.close()
+        conn.close()
+
+
 # Function to update the birthday of a user in "AbbyBot_Rei"
-def update_user_birthday(user_id, birthday):
+def update_user_birthday(user_id, birthday_date):
     conn = get_db_connection("AbbyBot_Rei")
     cursor = conn.cursor()
 
@@ -331,7 +346,7 @@ def update_user_birthday(user_id, birthday):
             SET user_birthday = %s 
             WHERE user_id = %s;
         """
-        cursor.execute(query, (birthday, user_id))
+        cursor.execute(query, (birthday_date, user_id))
         conn.commit()  # Commit the transaction
         return cursor.rowcount  # Return number of affected rows
 
@@ -339,31 +354,51 @@ def update_user_birthday(user_id, birthday):
         cursor.close()
         conn.close()
 
+
 # Endpoint to update the user's birthday
 @app.route('/update-birthday', methods=['POST'])
 def update_birthday():
     # Get data from the request
     user_id = request.json.get('user_id')
-    birthday = request.json.get('birthday')
+    birthday = request.json.get('birthday_date')
 
     # Validate that both user_id and birthday are provided
     if not user_id or not birthday:
-        return jsonify({"error": "Missing user_id or birthday"}), 400
+        return jsonify({"error": "Missing user_id or birthday_date", "status_code": 400}), 400
 
     # Validate the birthday format (YYYY-MM-DD)
     try:
-        # Parse the date to ensure it's in the correct format
         birthday_date = datetime.strptime(birthday, '%Y-%m-%d').date()
     except ValueError:
-        return jsonify({"error": "Invalid birthday format. Use YYYY-MM-DD."}), 400
+        return jsonify({"error": "Invalid birthday format. Use YYYY-MM-DD.", "status_code": 400}), 400
+
+    # Validate that the birthday is not in the future or too old (e.g., before 1900)
+    today = datetime.today().date()
+    if birthday_date > today:
+        return jsonify({"error": "Birthday cannot be in the future.", "status_code": 400}), 400
+    elif birthday_date.year < 1900:
+        return jsonify({"error": "Birthday is too old. Please enter a valid date after 1900.", "status_code": 400}), 400
+
+    # Get the current birthday of the user from the database
+    current_birthday = get_current_birthday(user_id)
+
+    # Check if the user exists
+    if current_birthday is None:
+        return jsonify({"error": "No user found with the provided user_id", "status_code": 404}), 404
+
+    # Check if the new birthday is the same as the current one
+    if current_birthday == birthday_date:
+        return jsonify({"info": "The birthday is already set to this value. No update needed.", "status_code": 200}), 200
 
     # Update the user's birthday in the database
     rows_affected = update_user_birthday(user_id, birthday_date)
 
     if rows_affected > 0:
-        return jsonify({"success": f"Birthday updated for user {user_id}"}), 200
+        return jsonify({"success": f"Birthday updated for user {user_id}", "status_code": 200}), 200
     else:
-        return jsonify({"error": "No user found with the provided user_id"}), 404
+        return jsonify({"error": "Failed to update the birthday for user {user_id}", "status_code": 500}), 500
+
+
 
 def get_current_theme(user_id):
     conn = get_db_connection("AbbyBot_Rei")
@@ -414,17 +449,18 @@ def update_theme():
 
     # Validate that both user_id and theme_id are provided
     if not user_id or not theme_id:
-        return jsonify({"error": "Missing user_id or theme_id"}), 400
+        return jsonify({"error": "Missing user_id or theme_id", "status_code": 400}), 400
 
     # Update the user's abbybot_theme in the database
     rows_affected = update_abbybot_theme(user_id, theme_id)
 
     if rows_affected == -1:
-        return jsonify({"info": "No update needed, the theme is already set to this value"}), 200
+        return jsonify({"info": "No update needed, the theme is already set to this value", "status_code": 200}), 200
     elif rows_affected > 0:
-        return jsonify({"success": f"AbbyBot_theme updated for user {user_id}"}), 200
+        return jsonify({"success": f"AbbyBot_theme updated for user {user_id}", "status_code": 200}), 200
     else:
-        return jsonify({"error": "No user found with the provided user_id"}), 404
+        return jsonify({"error": "No user found with the provided user_id", "status_code": 404}), 404
+
 
 def get_current_language(guild_id):
     conn = get_db_connection("AbbyBot_Rei")
@@ -471,7 +507,6 @@ def update_language(guild_id, guild_language):
 # Endpoint to update AbbyBot language in a server 
 @app.route('/update-language', methods=['POST'])
 def update_guild_language_route():
-
     # Get data from the request
     guild_id = request.json.get('guild_id')
     language_id = request.json.get('language_id')
@@ -480,11 +515,12 @@ def update_guild_language_route():
     rows_affected = update_language(guild_id, language_id)
 
     if rows_affected == -1:
-        return jsonify({"info": "No update needed, the language is already set"}), 200
+        return jsonify({"info": "No update needed, the language is already set", "status_code": 200}), 200
     elif rows_affected > 0:
-        return jsonify({"success": f"Language updated for guild {guild_id}"}), 200
+        return jsonify({"success": f"Language updated for guild {guild_id}", "status_code": 200}), 200
     else:
-        return jsonify({"error": "No guild found with the provided guild_id"}), 404
+        return jsonify({"error": "No guild found with the provided guild_id", "status_code": 404}), 404
+
 
 
 

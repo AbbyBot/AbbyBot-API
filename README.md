@@ -196,7 +196,62 @@ Updates the birthday of a user in the AbbyBot dashboard. If the user exists, the
 #### Example Response:
 ```json
 {
-  "success": "Birthday updated for user 123456789012345678"
+  "success": "Birthday updated for user 123456789012345678",
+  "status_code": 200
+}
+
+```
+
+#### Example Response (Same birthday_date as database):
+```json
+{
+  "info": "The birthday is already set to this value. No update needed.",
+  "status_code": 200
+}
+
+```
+
+#### Example Response (If any field is missing):
+```json
+{
+  "error": "Missing user_id or birthday_date",
+  "status_code": 400
+}
+
+```
+#### Example Response (If the date format is incorrect):
+```json
+{
+  "error": "Invalid birthday format. Use YYYY-MM-DD.",
+  "status_code": 400
+}
+
+```
+
+#### Example Response (If the date is in the future or too old):
+```json
+{
+  "error": "Birthday cannot be in the future.",
+  "status_code": 400
+}
+
+```
+
+or
+
+```json
+{
+  "error": "Birthday is too old. Please enter a valid date after 1900.",
+  "status_code": 400
+}
+
+```
+
+#### Example Response (If the user is not found):
+```json
+{
+  "error": "No user found with the provided user_id",
+  "status_code": 404
 }
 
 ```
@@ -224,7 +279,8 @@ Updates the birthday of a user in the AbbyBot dashboard. If the user exists, the
 #### Example Response (Theme Updated):
 ```json
 {
-  "success": "AbbyBot_theme updated for user 123456789012345678"
+  "success": "AbbyBot_theme updated for user 123456789012345678",
+  "status_code": 200
 }
 
 
@@ -232,7 +288,8 @@ Updates the birthday of a user in the AbbyBot dashboard. If the user exists, the
 #### Example Response (No Update Needed):
 ```json
 {
-  "info": "No update needed, the theme is already set to this value"
+  "info": "No update needed, the theme is already set to this value",
+  "status_code": 200
 }
 
 
@@ -240,7 +297,8 @@ Updates the birthday of a user in the AbbyBot dashboard. If the user exists, the
 #### Example Response (No User Found):
 ```json
 {
-  "info": "No user found with the provided user_id"
+  "info": "No user found with the provided user_id",
+  "status_code": 404
 }
 
 
@@ -268,7 +326,8 @@ Updates the language of a guild in the AbbyBot dashboard. If the guild exists, t
 #### Example Response (Language Updated):
 ```json
 {
-  "success": "Language updated for guild 123456789012345678"
+  "success": "Language updated for guild 123456789012345678",
+  "status_code": 200
 }
 
 
@@ -276,7 +335,8 @@ Updates the language of a guild in the AbbyBot dashboard. If the guild exists, t
 #### Example Response (No Update Needed):
 ```json
 {
-  "info": "No update needed, the language is already set"
+  "info": "No update needed, the language is already set",
+  "status_code": 200
 }
 
 
@@ -284,7 +344,8 @@ Updates the language of a guild in the AbbyBot dashboard. If the guild exists, t
 #### Example Response (No Guild Found):
 ```json
 {
-  "info": "No guild found with the provided guild_id"
+  "info": "No guild found with the provided guild_id",
+  "status_code": 404
 }
 
 
