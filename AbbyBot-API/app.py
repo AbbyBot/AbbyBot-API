@@ -6,21 +6,21 @@ from dotenv import load_dotenv
 from flask import send_from_directory
 from flask_cors import CORS
 
-# Load environment variables from the .env file
+
 load_dotenv()
 
 DISCORD_API_BASE_URL = "https://discord.com/api/v10"
 TOKEN = os.getenv('DISCORD_TOKEN')
 
-# Load the image folder path from the .env file
+
 IMAGE_FOLDER = os.getenv('IMAGE_FOLDER_PATH')
-BASE_URL = "http://localhost:5002"  # Change this to the real domain when deployed
+BASE_URL = "http://localhost:5002" 
 
 app = Flask(__name__)
 
 CORS(app)
 
-# Function to connect to the database
+
 def get_db_connection(database):
     return mysql.connector.connect(
         host=os.getenv('DB_HOST'),
@@ -29,16 +29,16 @@ def get_db_connection(database):
         database=database
     )
 
-# Helper function to ensure proper URL construction
+
 def construct_url(filename):
     """
     Concatenate BASE_URL and the path, ensuring there is no double slash.
     """
     return f"{BASE_URL.rstrip('/')}/images/{filename}"
 
-# Function to get the number of servers from the "AbbyBot_Rei" database
+
 def get_server_count():
-    conn = get_db_connection("AbbyBot_Rei")  # "AbbyBot_Rei" database
+    conn = get_db_connection("AbbyBot_Rei")  
     cursor = conn.cursor()
     cursor.execute("SELECT COUNT(DISTINCT guild_id) FROM dashboard WHERE is_active = 1;")
     count = cursor.fetchone()[0]
@@ -46,14 +46,14 @@ def get_server_count():
     conn.close()
     return count
 
-# Function to get bot info from Discord API
+
 def get_bot_info_from_discord():
     url = f"{DISCORD_API_BASE_URL}/users/@me"
     headers = {
         "Authorization": f"Bot {TOKEN}"
     }
 
-    # Make the request to the Discord API
+
     response = requests.get(url, headers=headers)
 
     if response.status_code == 200:
@@ -63,8 +63,8 @@ def get_bot_info_from_discord():
             "bot_name": bot_info["username"],
             "discriminator": bot_info["discriminator"],
             "avatar_url": f"https://cdn.discordapp.com/avatars/{bot_info['id']}/{bot_info['avatar']}.png",
-            "banner_url": f"https://example.com/bot/banner/{bot_info['id']}.png",  # Personal banner URL
-            "server_count": get_server_count(),  # Get from local database
+            "banner_url": f"https://example.com/bot/banner/{bot_info['id']}.png",  
+            "server_count": get_server_count(),  
             "version": os.getenv('BOT_VERSION')
         }
         return bot_data
@@ -72,9 +72,9 @@ def get_bot_info_from_discord():
         print(f"Error fetching bot info: {response.status_code} {response.text}")
         return None
 
-# Function to insert or update bot info in the "AbbyBot_Asuka" database
+
 def update_bot_info_in_db(bot_info):
-    conn = get_db_connection("AbbyBot_Asuka")  # "AbbyBot_Asuka" database
+    conn = get_db_connection("AbbyBot_Asuka")  
     cursor = conn.cursor()
 
     sql = """
@@ -98,7 +98,6 @@ def update_bot_info_in_db(bot_info):
     cursor.close()
     conn.close()
 
-# Function to get user server data from the "AbbyBot_Rei" database
 def get_user_server_data(user_id):
     conn = get_db_connection("AbbyBot_Rei")  
     cursor = conn.cursor(dictionary=True)
@@ -132,16 +131,16 @@ def get_user_server_data(user_id):
 
 
 
-# Endpoint to serve images from the absolute path defined in the .env file
+
 @app.route('/images/<path:filename>')
 def serve_image(filename):
-    # Construct the full path of the image
+
     full_image_path = os.path.join(IMAGE_FOLDER, filename)
     print(f"Looking for the file in: {full_image_path}")
     
     return send_from_directory(IMAGE_FOLDER, filename)
 
-# Endpoint to retrieve bot information
+
 @app.route('/bot-info', methods=['GET'])
 def bot_info():
     conn = get_db_connection("AbbyBot_Asuka")
@@ -167,7 +166,7 @@ def bot_info():
     else:
         return jsonify({"error": "No bot information found"}), 404
 
-# Endpoint to retrieve user server data
+
 @app.route('/user-servers', methods=['GET'])
 def user_servers():
     user_id = request.args.get('user_id')
@@ -187,7 +186,7 @@ def user_servers():
         return jsonify({"error": "No data found for this user"}), 404
     
 
-# Function to get user profile info from "AbbyBot_Rei"
+
 def get_user_info(user_id):
     conn = get_db_connection("AbbyBot_Rei")  
     cursor = conn.cursor(dictionary=True)
@@ -215,7 +214,7 @@ def get_user_info(user_id):
 
     return result
 
-# Endpoint to retrieve user profile information
+
 @app.route('/user-info', methods=['GET'])
 def user_info():
 
@@ -227,18 +226,18 @@ def user_info():
     user_data = get_user_info(user_id)
 
     if user_data:
-        # Handle birthday formatting to 'YYYY-MM-DD' or null if not available
+
         birthday = user_data["birthday"]
         if birthday:
-            birthday = birthday.strftime('%Y-%m-%d')  # Format to 'YYYY-MM-DD'
+            birthday = birthday.strftime('%Y-%m-%d')  
         else:
-            birthday = None  # Set as None if not defined
+            birthday = None  
 
         return jsonify({
             "discord_username": user_data["discord_username"],
             "account_created_at": user_data["account_created_at"] or "No data available",
             "user_id": user_data["user_id"],
-            "user_birthday": birthday,  # Formatted birthday
+            "user_birthday": birthday,  
             "servers_shared": user_data["servers_shared"],
             "privilege": user_data["privilege"],
             "abbybot_theme": user_data["abbybot_theme"],
@@ -246,13 +245,13 @@ def user_info():
     else:
         return jsonify({"error": "No data found for this user"}), 404
 
-# Get all dashboard for a server ()
+
 @app.route('/server-dashboard', methods=['GET'])
 def get_server_dashboard():
-    # Get guild_id from query parameters
+
     guild_id = request.args.get('guild_id')
 
-    # Check if guild_id is provided
+
     if not guild_id:
         return jsonify({'error': 'Missing required parameter: guild_id'}), 400
     
@@ -288,28 +287,28 @@ def get_server_dashboard():
             cursor.execute(query, (guild_id,))
             result = cursor.fetchall()
 
-            # Creating a structure to group roles for each user
+            
             dashboard = {}
             for row in result:
-                user_id = row[3]  # Index 3 is 'User ID'
+                user_id = row[3] 
 
-                # Handle Birthday Date formatting to 'YYYY-MM-DD' or set it as None
-                birthday_date = row[5]  # Index 5 is 'Birthday Date'
+                
+                birthday_date = row[5]  
                 if birthday_date:
-                    birthday_date = birthday_date.strftime('%Y-%m-%d')  # Format to 'YYYY-MM-DD'
+                    birthday_date = birthday_date.strftime('%Y-%m-%d')  
                 else:
-                    birthday_date = None  # Set as None if not defined
+                    birthday_date = None  
                 
                 if user_id not in dashboard:
                     dashboard[user_id] = {
-                        'username': row[0],  # Index 0 is 'Username'
-                        'nickname in server': row[1],  # Index 1 is 'Nickname in server'
-                        'user_type': row[2],  # Index 2 is 'User type'
-                        'user_id': row[3],  # Index 3 is 'User ID'
+                        'username': row[0],  
+                        'nickname in server': row[1],  
+                        'user_type': row[2],  
+                        'user_id': row[3],  
                         'server_roles': [],
-                        'birthday_date': birthday_date  # Formatted 'Birthday Date'
+                        'birthday_date': birthday_date  
                     }
-                if row[4]:  # Index 4 is 'server_roles'
+                if row[4]:  
                     dashboard[user_id]['server_roles'].append(row[4])
 
             return jsonify(list(dashboard.values()))
@@ -320,7 +319,7 @@ def get_server_dashboard():
 
 from datetime import datetime
 
-# Function to get the current birthday of a user
+
 def get_current_birthday(user_id):
     conn = get_db_connection("AbbyBot_Rei")
     cursor = conn.cursor()
@@ -329,13 +328,13 @@ def get_current_birthday(user_id):
         query = "SELECT user_birthday FROM user_profile WHERE user_id = %s;"
         cursor.execute(query, (user_id,))
         result = cursor.fetchone()
-        return result[0] if result else None  # Return the current birthday if exists
+        return result[0] if result else None  
     finally:
         cursor.close()
         conn.close()
 
 
-# Function to update the birthday of a user in "AbbyBot_Rei"
+
 def update_user_birthday(user_id, birthday_date):
     conn = get_db_connection("AbbyBot_Rei")
     cursor = conn.cursor()
@@ -347,50 +346,50 @@ def update_user_birthday(user_id, birthday_date):
             WHERE user_id = %s;
         """
         cursor.execute(query, (birthday_date, user_id))
-        conn.commit()  # Commit the transaction
-        return cursor.rowcount  # Return number of affected rows
+        conn.commit() 
+        return cursor.rowcount  
 
     finally:
         cursor.close()
         conn.close()
 
 
-# Endpoint to update the user's birthday
+
 @app.route('/update-birthday', methods=['POST'])
 def update_birthday():
-    # Get data from the request
+
     user_id = request.json.get('user_id')
     birthday = request.json.get('birthday_date')
 
-    # Validate that both user_id and birthday are provided
+
     if not user_id or not birthday:
         return jsonify({"error": "Missing user_id or birthday_date", "status_code": 400}), 400
 
-    # Validate the birthday format (YYYY-MM-DD)
+
     try:
         birthday_date = datetime.strptime(birthday, '%Y-%m-%d').date()
     except ValueError:
         return jsonify({"error": "Invalid birthday format. Use YYYY-MM-DD.", "status_code": 400}), 400
 
-    # Validate that the birthday is not in the future or too old (e.g., before 1900)
+
     today = datetime.today().date()
     if birthday_date > today:
         return jsonify({"error": "Birthday cannot be in the future.", "status_code": 400}), 400
     elif birthday_date.year < 1900:
         return jsonify({"error": "Birthday is too old. Please enter a valid date after 1900.", "status_code": 400}), 400
 
-    # Get the current birthday of the user from the database
+
     current_birthday = get_current_birthday(user_id)
 
     # Check if the user exists
     if current_birthday is None:
         return jsonify({"error": "No user found with the provided user_id", "status_code": 404}), 404
 
-    # Check if the new birthday is the same as the current one
+
     if current_birthday == birthday_date:
         return jsonify({"info": "The birthday is already set to this value. No update needed.", "status_code": 200}), 200
 
-    # Update the user's birthday in the database
+
     rows_affected = update_user_birthday(user_id, birthday_date)
 
     if rows_affected > 0:
@@ -408,50 +407,50 @@ def get_current_theme(user_id):
         query = "SELECT theme_id FROM user_profile WHERE user_id = %s;"
         cursor.execute(query, (user_id,))
         result = cursor.fetchone()
-        return result[0] if result else None  # Return the current theme_id if exists
+        return result[0] if result else None  
     finally:
         cursor.close()
         conn.close()
 
 
 
-# Function to update the birthday of a user in "AbbyBot_Rei"
+
 def update_abbybot_theme(user_id, theme_id):
     conn = get_db_connection("AbbyBot_Rei")
     cursor = conn.cursor()
 
     try:
-        # Check if the user already has this theme_id
+        
         current_theme = get_current_theme(user_id)
         if current_theme == theme_id:
-            return -1  # Indicating that no update is needed (same theme)
+            return -1  
 
-        # Proceed with the update
+        
         query = """
             UPDATE user_profile 
             SET theme_id = %s 
             WHERE user_id = %s;
         """
         cursor.execute(query, (theme_id, user_id))
-        conn.commit()  # Commit the transaction
-        return cursor.rowcount  # Return number of affected rows
+        conn.commit()  
+        return cursor.rowcount  
 
     finally:
         cursor.close()
         conn.close()
 
-# Endpoint to update the user's AbbyBot_Theme (dashboard skin)
+
 @app.route('/update-abbybot_theme', methods=['POST'])
 def update_theme():
-    # Get data from the request
+    
     user_id = request.json.get('user_id')
     theme_id = request.json.get('theme_id')
 
-    # Validate that both user_id and theme_id are provided
+    
     if not user_id or not theme_id:
         return jsonify({"error": "Missing user_id or theme_id", "status_code": 400}), 400
 
-    # Update the user's abbybot_theme in the database
+    
     rows_affected = update_abbybot_theme(user_id, theme_id)
 
     if rows_affected == -1:
@@ -476,26 +475,26 @@ def get_current_language(guild_id):
         conn.close()
 
 
-# Function to update the language of a guild in "AbbyBot_Rei"
+
 def update_language(guild_id, guild_language):
     conn = get_db_connection("AbbyBot_Rei")
     cursor = conn.cursor()
 
     try:
-        # Check if the guild already has this language
+        
         current_language = get_current_language(guild_id)
         if current_language == guild_language:
-            return -1  # Indicating that no update is needed (same language)
+            return -1  
 
-        # Proceed with the update
+
         query = """
             UPDATE server_settings 
             SET guild_language = %s 
             WHERE guild_id = %s;
         """
-        cursor.execute(query, (guild_language, guild_id))  # Note the correct parameter order
-        conn.commit()  # Commit the transaction
-        return cursor.rowcount  # Return number of affected rows
+        cursor.execute(query, (guild_language, guild_id))  
+        conn.commit()  
+        return cursor.rowcount  
 
     finally:
         cursor.close()
@@ -503,14 +502,14 @@ def update_language(guild_id, guild_language):
 
 
 
-# Endpoint to update AbbyBot language in a server 
+
 @app.route('/update-language', methods=['POST'])
 def update_guild_language_route():
-    # Get data from the request
+
     guild_id = request.json.get('guild_id')
     language_id = request.json.get('language_id')
     
-    # Update guild_language
+
     rows_affected = update_language(guild_id, language_id)
 
     if rows_affected == -1:
@@ -535,26 +534,26 @@ def get_current_event_value(guild_id):
         conn.close()
 
 
-# Function to activate/deactivate automatic events of a guild in "AbbyBot_Rei"
+
 def toggle_events(guild_id, activated_events):
     conn = get_db_connection("AbbyBot_Rei")
     cursor = conn.cursor()
 
     try:
-        # Check if the guild already has this language
+        
         current_events = get_current_event_value(guild_id)
         if current_events == activated_events:
-            return -1  # Indicating that no update is needed (same value)
+            return -1  
 
-        # Proceed with the update
+
         query = """
             UPDATE server_settings 
             SET activated_events = %s 
             WHERE guild_id = %s;
         """
-        cursor.execute(query, (activated_events, guild_id))  # Note the correct parameter order
-        conn.commit()  # Commit the transaction
-        return cursor.rowcount  # Return number of affected rows
+        cursor.execute(query, (activated_events, guild_id))  
+        conn.commit()  
+        return cursor.rowcount  
 
     finally:
         cursor.close()
@@ -562,23 +561,23 @@ def toggle_events(guild_id, activated_events):
 
 
 
-# Endpoint to activate/deactivate automatic events in a server 
+
 @app.route('/toggle_automatic_events', methods=['POST'])
 def toggle_automatic_event():
-    # Get data from the request
+
     guild_id = request.json.get('guild_id')
     activated_events = request.json.get('activated_events')
     
-    # Check if activated_events is not a number
+
     if not isinstance(activated_events, int):
         return jsonify({"error": "Invalid value for activated_events. It must be a number (0 or 1).", "status_code": 400}), 400
   
     
-    # Check if activated_events is valid (should be 0 or 1)
+
     if activated_events not in [0, 1]:
         return jsonify({"error": "Invalid value for activated_events. It must be 0 or 1.", "status_code": 400}), 400
 
-    # Update events
+
     rows_affected = toggle_birthday(guild_id, activated_events)
 
     if rows_affected == -1:
@@ -592,7 +591,7 @@ def toggle_automatic_event():
         return jsonify({"error": "No guild found with the provided guild_id", "status_code": 404}), 404
 
 
-# Function to activate/deactivate automatic events of a guild in "AbbyBot_Rei"
+
 def toggle_birthday(guild_id, activated_birthday):
     conn = get_db_connection("AbbyBot_Rei")
     cursor = conn.cursor()
@@ -601,17 +600,17 @@ def toggle_birthday(guild_id, activated_birthday):
         
         current_events = get_current_toggle_birthday(guild_id)
         if current_events == activated_birthday:
-            return -1  # Indicating that no update is needed (same value)
+            return -1  
 
-        # Proceed with the update
+
         query = """
             UPDATE server_settings 
             SET activated_birthday = %s 
             WHERE guild_id = %s;
         """
-        cursor.execute(query, (activated_birthday, guild_id))  # Note the correct parameter order
-        conn.commit()  # Commit the transaction
-        return cursor.rowcount  # Return number of affected rows
+        cursor.execute(query, (activated_birthday, guild_id))  
+        conn.commit()  
+        return cursor.rowcount  
 
     finally:
         cursor.close()
@@ -631,23 +630,23 @@ def get_current_toggle_birthday(guild_id):
         conn.close()
 
 
-# Endpoint to activate/deactivate birhtday channel in a server 
+
 @app.route('/toggle-birthday-event', methods=['POST'])
 def toggle_auto_birthday():
-    # Get data from the request
+
     guild_id = request.json.get('guild_id')
     activated_birthday = request.json.get('activated_birthday')
     
-    # Check if activated_birthday is not a number
+
     if not isinstance(activated_birthday, int):
         return jsonify({"error": "Invalid value for activated_birthday. It must be a number (0 or 1).", "status_code": 400}), 400
   
     
-    # Check if activated_events is valid (should be 0 or 1)
+
     if activated_birthday not in [0, 1]:
         return jsonify({"error": "Invalid value for activated_birthday. It must be 0 or 1.", "status_code": 400}), 400
 
-    # Update events
+
     rows_affected = toggle_birthday(guild_id, activated_birthday)
 
     if rows_affected == -1:
@@ -660,6 +659,74 @@ def toggle_auto_birthday():
     else:
         return jsonify({"error": "No guild found with the provided guild_id", "status_code": 404}), 404
 
+
+
+def toggle_logs(guild_id, activated_logs):
+    conn = get_db_connection("AbbyBot_Rei")
+    cursor = conn.cursor()
+
+    try:
+        
+        current_events_logs = get_current_logs_value(guild_id)
+        if current_events_logs == activated_logs:
+            return -1 
+
+
+        query = """
+            UPDATE server_settings 
+            SET activated_logs = %s 
+            WHERE guild_id = %s;
+        """
+        cursor.execute(query, (activated_logs, guild_id))  
+        conn.commit()  
+        return cursor.rowcount  
+
+    finally:
+        cursor.close()
+        conn.close()
+
+def get_current_logs_value(guild_id):
+    conn = get_db_connection("AbbyBot_Rei")
+    cursor = conn.cursor()
+    
+    try:
+        query = "SELECT activated_logs FROM server_settings WHERE guild_id = %s;"
+        cursor.execute(query, (guild_id,))
+        result = cursor.fetchone()
+        return result[0] if result else None 
+    finally:
+        cursor.close()
+        conn.close()
+
+
+@app.route('/toggle-logs', methods=['POST'])
+def toggle_auto_logs():
+
+    guild_id = request.json.get('guild_id')
+    activated_logs = request.json.get('activated_logs')
+    
+
+    if not isinstance(activated_logs, int):
+        return jsonify({"error": "Invalid value for activated_logs. It must be a number (0 or 1).", "status_code": 400}), 400
+  
+    
+
+    if activated_logs not in [0, 1]:
+        return jsonify({"error": "Invalid value for activated_logs. It must be 0 or 1.", "status_code": 400}), 400
+
+
+    rows_affected = toggle_logs(guild_id, activated_logs)
+
+    if rows_affected == -1:
+        return jsonify({"info": "No update needed, the activated_events value is already set", "status_code": 200}), 200
+    elif rows_affected > 0:
+        if activated_logs == 1:
+            return jsonify({"success": f"Activated logs for guild {guild_id}", "status_code": 200}), 200
+        else:
+            return jsonify({"success": f"Deactivated logs for guild {guild_id}", "status_code": 200}), 200
+    else:
+        return jsonify({"error": "No guild found with the provided guild_id", "status_code": 404}), 404
+    
 
 if __name__ == '__main__':
     app.run(debug=True, host='127.0.0.1', port=5002)

@@ -508,6 +508,84 @@ Update the birthday event trigger for a guild in AbbyBot. If the guild exists, i
 
 ```
 
+### 11. Update AbbyBot Logs events
+
+**URL:** `/toggle-logs`  
+**Method:** `POST`  
+**Parameters:**
+- `guild_id`: The ID of the guild who the language needs to be updated (required).
+- `activated_logs`: The value to enable/disable AbbyBot logs events, 1 = activated, 0 = deactivated (required).
+
+Update the logs event trigger for a guild in AbbyBot. If the guild exists, its logs  events are updated to activated/deactivated.
+
+#### Example Request:
+```json
+{
+  "guild_id": "123456789012345678",
+  "activated_logs": 1
+}
+
+```
+
+#### Example Response (Activated Logs):
+```json
+{
+  "success": "Activated auto events for guild 123456789012345678",
+  "status_code": 200
+}
+
+
+```
+
+#### Example Response (Deactivated Logs):
+```json
+{
+  "success": "Deactivated auto events for guild 123456789012345678",
+  "status_code": 200
+}
+
+
+```
+
+#### Example Response (Value is greater than one or less than zero):
+```json
+{
+  "error": "Invalid value for activated_logs. It must be 0 or 1.",
+  "status_code": 400
+}
+
+
+```
+
+#### Example Response (activated_logs is not a number):
+```json
+{
+  "error": "Invalid value for activated_logs. It must be a number (0 or 1).",
+  "status_code": 400
+}
+
+
+```
+
+#### Example Response (No Update Needed):
+```json
+{
+  "info": "No update needed, the activated_logs value is already set",
+  "status_code": 200
+}
+
+
+```
+#### Example Response (No Guild Found):
+```json
+{
+  "info": "No guild found with the provided guild_id",
+  "status_code": 404
+}
+
+
+```
+
 
 ## Notes
 
