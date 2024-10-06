@@ -781,5 +781,68 @@ def set_new_prefix():
         return jsonify({"error": "No guild found with the provided guild_id", "status_code": 404}), 404
 
 
+
+def set_birthday_channel(guild_id, birthday_channel):
+    conn = get_db_connection("AbbyBot_Rei")
+    cursor = conn.cursor()
+
+    try:
+        
+        current_birthday_channel = get_current_birthday_channel(guild_id)
+        if current_birthday_channel == birthday_channel:
+            return -1 
+
+        query = """
+            UPDATE server_settings 
+            SET birthday_channel = %s 
+            WHERE guild_id = %s;
+        """
+        cursor.execute(query, (birthday_channel, guild_id))  
+        conn.commit()  
+        return cursor.rowcount  
+
+    finally:
+        cursor.close()
+        conn.close()
+
+def get_current_birthday_channel(guild_id):
+    conn = get_db_connection("AbbyBot_Rei")
+    cursor = conn.cursor()
+    
+    try:
+        query = "SELECT birthday_channel FROM server_settings WHERE guild_id = %s;"
+        cursor.execute(query, (guild_id,))
+        result = cursor.fetchone()
+        return result[0] if result else None 
+    finally:
+        cursor.close()
+        conn.close()
+
+
+@app.route('/set-birthday_channel', methods=['POST'])
+def change_birthday_channel():
+
+    guild_id = request.json.get('guild_id')
+    birthday_channel = request.json.get('birthday_channel')
+
+    # Check if birthday_channel is a number
+    if not isinstance(birthday_channel, (int, str)) or not str(birthday_channel).isdigit():
+        return jsonify({"error": "Invalid value for birthday_channel. It must be a numeric value.", "status_code": 400}), 400
+
+    # Convert birthday_channel to int if it is a numeric string
+    birthday_channel = int(birthday_channel)
+
+    rows_affected = set_birthday_channel(guild_id, birthday_channel)
+
+    if rows_affected == -1:
+        return jsonify({"info": "No update needed, the birthday_channel value is already set", "status_code": 200}), 200
+    elif rows_affected > 0:
+        return jsonify({"success": f"Changed birthday_channel for guild {guild_id}", "status_code": 200}), 200
+    else:
+        return jsonify({"error": "No guild found with the provided guild_id", "status_code": 404}), 404
+
+
+
+
 if __name__ == '__main__':
     app.run(debug=True, host='127.0.0.1', port=5002)

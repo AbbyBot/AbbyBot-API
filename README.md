@@ -637,6 +637,65 @@ Updates the prefix only in the specified guild.
 ```
 
 
+### 13. Set AbbyBot birthday channel
+
+**URL:** `/set-birthday_channel`  
+**Method:** `POST`  
+**Parameters:**
+- `guild_id`: The ID of the guild who the language needs to be updated (required).
+- `birthday_channel`: The ID for the channel where AbbyBot greet users in their birthdays (required).
+
+Updates the prefix only in the specified guild.
+
+#### Example Request:
+```json
+{
+  "guild_id": "123456789012345678",
+  "birthday_channel": 123456789012345678
+}
+
+```
+
+#### Example Request (if birthday_channel is not a number):
+```json
+{
+  "error": "Invalid value for birthday_channel. It must be a numeric value.",
+  "status_code": 400
+}
+
+```
+
+#### Example Response (Updated birthday_channel):
+```json
+{
+  "success": "Changed birthday_channel for guild 123456789012345678",
+  "status_code": 200
+}
+
+
+```
+
+
+#### Example Response (No Update Needed):
+```json
+{
+  "info": "No update needed, the birthday_channel value is already set",
+  "status_code": 200
+}
+
+
+```
+#### Example Response (No Guild Found):
+```json
+{
+  "info": "No guild found with the provided guild_id",
+  "status_code": 404
+}
+
+
+```
+
+
 ## Notes
 
 - Ensure your image paths are correctly set up in the database. The `IMAGE_FOLDER_PATH` should contain the images referenced in the API.
