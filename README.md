@@ -587,6 +587,56 @@ Update the logs event trigger for a guild in AbbyBot. If the guild exists, its l
 ```
 
 
+### 12. Change AbbyBot prefix
+
+**URL:** `/set-prefix`  
+**Method:** `POST`  
+**Parameters:**
+- `guild_id`: The ID of the guild who the language needs to be updated (required).
+- `prefix`: The prefix for AbbyBot in a guild, ex: abbybot_ (required).
+
+Updates the prefix only in the specified guild.
+
+#### Example Request:
+```json
+{
+  "guild_id": "123456789012345678",
+  "prefix": "abbybot_"
+}
+
+```
+
+#### Example Response (Updated prefix):
+```json
+{
+  "success": "Changed prefix for guild 123456789012345678",
+  "status_code": 200
+}
+
+
+```
+
+
+#### Example Response (No Update Needed):
+```json
+{
+  "info": "No update needed, the prefix value is already set",
+  "status_code": 200
+}
+
+
+```
+#### Example Response (No Guild Found):
+```json
+{
+  "info": "No guild found with the provided guild_id",
+  "status_code": 404
+}
+
+
+```
+
+
 ## Notes
 
 - Ensure your image paths are correctly set up in the database. The `IMAGE_FOLDER_PATH` should contain the images referenced in the API.

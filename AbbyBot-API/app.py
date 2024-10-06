@@ -728,5 +728,58 @@ def toggle_auto_logs():
         return jsonify({"error": "No guild found with the provided guild_id", "status_code": 404}), 404
     
 
+def set_prefix(guild_id, prefix):
+    conn = get_db_connection("AbbyBot_Rei")
+    cursor = conn.cursor()
+
+    try:
+        
+        current_events_logs = get_current_prefix(guild_id)
+        if current_events_logs == prefix:
+            return -1 
+
+
+        query = """
+            UPDATE server_settings 
+            SET prefix = %s 
+            WHERE guild_id = %s;
+        """
+        cursor.execute(query, (prefix, guild_id))  
+        conn.commit()  
+        return cursor.rowcount  
+
+    finally:
+        cursor.close()
+        conn.close()
+
+def get_current_prefix(guild_id):
+    conn = get_db_connection("AbbyBot_Rei")
+    cursor = conn.cursor()
+    
+    try:
+        query = "SELECT prefix FROM server_settings WHERE guild_id = %s;"
+        cursor.execute(query, (guild_id,))
+        result = cursor.fetchone()
+        return result[0] if result else None 
+    finally:
+        cursor.close()
+        conn.close()
+
+@app.route('/set-prefix', methods=['POST'])
+def set_new_prefix():
+
+    guild_id = request.json.get('guild_id')
+    prefix = request.json.get('prefix')
+    
+    rows_affected = set_prefix(guild_id, prefix)
+
+    if rows_affected == -1:
+        return jsonify({"info": "No update needed, the prefix value is already set", "status_code": 200}), 200
+    elif rows_affected > 0:
+        return jsonify({"success": f"Changed prefix for guild {guild_id}", "status_code": 200}), 200
+    else:
+        return jsonify({"error": "No guild found with the provided guild_id", "status_code": 404}), 404
+
+
 if __name__ == '__main__':
     app.run(debug=True, host='127.0.0.1', port=5002)
