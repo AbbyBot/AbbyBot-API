@@ -695,6 +695,63 @@ Updates the prefix only in the specified guild.
 
 ```
 
+### 14. Set AbbyBot logs channel
+
+**URL:** `/set-logs_channel`  
+**Method:** `POST`  
+**Parameters:**
+- `guild_id`: The ID of the guild who the language needs to be updated (required).
+- `logs_channel`: The ID for the channel where AbbyBot greet users in their birthdays (required).
+
+Updates the logs_channel only in the specified guild.
+
+#### Example Request:
+```json
+{
+  "guild_id": "123456789012345678",
+  "logs_channel": 123456789012345678
+}
+
+```
+
+#### Example Request (if logs_channel is not a number):
+```json
+{
+  "error": "Invalid value for logs_channel. It must be a numeric value.",
+  "status_code": 400
+}
+
+```
+
+#### Example Response (Updated logs_channel):
+```json
+{
+  "success": "Changed logs_channel for guild 123456789012345678",
+  "status_code": 200
+}
+
+
+```
+
+
+#### Example Response (No Update Needed):
+```json
+{
+  "info": "No update needed, the logs_channel value is already set",
+  "status_code": 200
+}
+
+
+```
+#### Example Response (No Guild Found):
+```json
+{
+  "info": "No guild found with the provided guild_id",
+  "status_code": 404
+}
+
+
+```
 
 ## Notes
 

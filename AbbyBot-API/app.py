@@ -842,6 +842,67 @@ def change_birthday_channel():
         return jsonify({"error": "No guild found with the provided guild_id", "status_code": 404}), 404
 
 
+def set_logs_channel(guild_id, logs_channel):
+    conn = get_db_connection("AbbyBot_Rei")
+    cursor = conn.cursor()
+
+    try:
+        
+        current_logs_channel = get_current_logs_channel(guild_id)
+        if current_logs_channel == logs_channel:
+            return -1 
+
+        query = """
+            UPDATE server_settings 
+            SET birthday_channel = %s 
+            WHERE guild_id = %s;
+        """
+        cursor.execute(query, (logs_channel, guild_id))  
+        conn.commit()  
+        return cursor.rowcount  
+
+    finally:
+        cursor.close()
+        conn.close()
+
+def get_current_logs_channel(guild_id):
+    conn = get_db_connection("AbbyBot_Rei")
+    cursor = conn.cursor()
+    
+    try:
+        query = "SELECT logs_channel FROM server_settings WHERE guild_id = %s;"
+        cursor.execute(query, (guild_id,))
+        result = cursor.fetchone()
+        return result[0] if result else None 
+    finally:
+        cursor.close()
+        conn.close()
+
+
+@app.route('/set-logs_channel', methods=['POST'])
+def change_logs_channel():
+
+    guild_id = request.json.get('guild_id')
+    logs_channel = request.json.get('logs_channel')
+
+    # Check if logs_channel is a number
+    if not isinstance(logs_channel, (int, str)) or not str(logs_channel).isdigit():
+        return jsonify({"error": "Invalid value for logs_channel. It must be a numeric value.", "status_code": 400}), 400
+
+    # Convert logs_channel to int if it is a numeric string
+    birthday_channel = int(logs_channel)
+
+    rows_affected = set_logs_channel(guild_id, logs_channel)
+
+    if rows_affected == -1:
+        return jsonify({"info": "No update needed, the logs_channel value is already set", "status_code": 200}), 200
+    elif rows_affected > 0:
+        return jsonify({"success": f"Changed logs_channel for guild {guild_id}", "status_code": 200}), 200
+    else:
+        return jsonify({"error": "No guild found with the provided guild_id", "status_code": 404}), 404
+
+
+
 
 
 if __name__ == '__main__':
