@@ -123,7 +123,7 @@ def get_user_server_data(user_id):
         for server in result:
             server['is_owner'] = 1 if server['owner_id'] == user_id_int else 0
             if server['guild_icon_url']:
-                server['guild_icon_url'] = construct_url(server['guild_icon_url'])
+                server['guild_icon_url']
 
         return result
     else:
