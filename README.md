@@ -120,14 +120,7 @@ Returns information about the user's profile, including their Discord username, 
 }
 ```
 
-### 4. Serve Images
-
-**URL:** `/images/<filename>`  
-**Method:** `GET`
-
-Serves images stored in the folder specified by the `IMAGE_FOLDER_PATH` environment variable. Images are accessed by their filename.
-
-### 5. Get Server Dashboard
+### 4. Get Server Dashboard
 
 **URL:** `/server-dashboard`  
 **Method:** `GET`  
@@ -174,7 +167,7 @@ Returns the list of all users (dashboard) on a server where AbbyBot is, bringing
 
 ```
 
-### 6. Update Birthday
+### 5. Update Birthday
 
 **URL:** `/update-birthday`  
 **Method:** `POST`  
@@ -257,7 +250,7 @@ or
 ```
 
 
-### 7. Update AbbyBot Theme
+### 6. Update AbbyBot Theme
 
 **URL:** `/update-abbybot_theme`  
 **Method:** `POST`  
@@ -304,7 +297,7 @@ Updates the birthday of a user in the AbbyBot dashboard. If the user exists, the
 
 ```
 
-### 8. Update AbbyBot Language
+### 7. Update AbbyBot Language
 
 **URL:** `/update-language`  
 **Method:** `POST`  
@@ -351,7 +344,7 @@ Updates the language of a guild in the AbbyBot dashboard. If the guild exists, t
 
 ```
 
-### 9. Update AbbyBot Auto events
+### 8. Update AbbyBot Auto events
 
 **URL:** `/toggle_automatic_events`  
 **Method:** `POST`  
@@ -430,7 +423,7 @@ Update the automatic event trigger for a guild in AbbyBot. If the guild exists, 
 ```
 
 
-### 10. Update AbbyBot Birthday events
+### 9. Update AbbyBot Birthday events
 
 **URL:** `/toggle-birthday-event`  
 **Method:** `POST`  
@@ -508,7 +501,7 @@ Update the birthday event trigger for a guild in AbbyBot. If the guild exists, i
 
 ```
 
-### 11. Update AbbyBot Logs events
+### 10. Update AbbyBot Logs events
 
 **URL:** `/toggle-logs`  
 **Method:** `POST`  
@@ -587,7 +580,7 @@ Update the logs event trigger for a guild in AbbyBot. If the guild exists, its l
 ```
 
 
-### 12. Change AbbyBot prefix
+### 11. Change AbbyBot prefix
 
 **URL:** `/set-prefix`  
 **Method:** `POST`  
@@ -637,7 +630,7 @@ Updates the prefix only in the specified guild.
 ```
 
 
-### 13. Set AbbyBot birthday channel
+### 12. Set AbbyBot birthday channel
 
 **URL:** `/set-birthday_channel`  
 **Method:** `POST`  
@@ -695,7 +688,7 @@ Updates the prefix only in the specified guild.
 
 ```
 
-### 14. Set AbbyBot logs channel
+### 13. Set AbbyBot logs channel
 
 **URL:** `/set-logs_channel`  
 **Method:** `POST`  
@@ -755,5 +748,6 @@ Updates the logs_channel only in the specified guild.
 
 ## Notes
 
-- Ensure your image paths are correctly set up in the database. The `IMAGE_FOLDER_PATH` should contain the images referenced in the API.
 - The bot information is periodically updated in the local database, but real-time data is fetched from the Discord API.
+
+- 

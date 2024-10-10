@@ -12,10 +12,6 @@ load_dotenv()
 DISCORD_API_BASE_URL = "https://discord.com/api/v10"
 TOKEN = os.getenv('DISCORD_TOKEN')
 
-
-IMAGE_FOLDER = os.getenv('IMAGE_FOLDER_PATH')
-BASE_URL = "http://localhost:5002" 
-
 app = Flask(__name__)
 
 CORS(app)
@@ -131,40 +127,81 @@ def get_user_server_data(user_id):
 
 
 
+app = Flask(__name__)
 
-@app.route('/images/<path:filename>')
-def serve_image(filename):
-
-    full_image_path = os.path.join(IMAGE_FOLDER, filename)
-    print(f"Looking for the file in: {full_image_path}")
-    
-    return send_from_directory(IMAGE_FOLDER, filename)
+# Variable to store the state of the bot
+bot_status = "offline"
 
 
-@app.route('/bot-info', methods=['GET'])
+@app.route('/bot-info', methods=['GET', 'POST'])
 def bot_info():
     conn = get_db_connection("AbbyBot_Asuka")
     cursor = conn.cursor(dictionary=True)
+    
+    # If it is a GET request, it returns the bot information
+    if request.method == 'GET':
+        query = "SELECT * FROM bot_info LIMIT 1"
+        cursor.execute(query)
+        bot_info = cursor.fetchone()
 
-    query = "SELECT * FROM bot_info LIMIT 1"
-    cursor.execute(query)
-    bot_info = cursor.fetchone()
+        cursor.close()
+        conn.close()
 
-    cursor.close()
-    conn.close()
+        if bot_info:
+            return jsonify({
+                "bot_id": bot_info["bot_id"],
+                "bot_name": bot_info["bot_name"],
+                "discriminator": bot_info["discriminator"],
+                "avatar_url": bot_info["avatar_url"],
+                "banner_url": bot_info["banner_url"],
+                "server_count": bot_info["server_count"],
+                "version": bot_info["version"],
+                "status": bot_info.get("status", "unknown") 
+            })
+        else:
+            return jsonify({"error": "No bot information found"}), 404
+    
+    # If it is a POST request, update the bot status
+    elif request.method == 'POST':
+        try:
+            # Get the submitted status on the request
+            data = request.json
+            bot_status = data.get("status")
+            
+            # Check if the state value is valid
+            if bot_status not in ["online", "offline"]:
+                return jsonify({"error": "Invalid status value"}), 400
 
-    if bot_info:
-        return jsonify({
-            "bot_id": bot_info["bot_id"],
-            "bot_name": bot_info["bot_name"],
-            "discriminator": bot_info["discriminator"],
-            "avatar_url": bot_info["avatar_url"],
-            "banner_url": bot_info["banner_url"],
-            "server_count": bot_info["server_count"],
-            "version": bot_info["version"]
-        })
-    else:
-        return jsonify({"error": "No bot information found"}), 404
+            # First select the bot_id
+            cursor.execute("SELECT bot_id FROM bot_info LIMIT 1")
+            bot_info = cursor.fetchone()
+
+            if bot_info:
+                bot_id = bot_info["bot_id"]
+                
+                # Then do the update using the bot_id
+                update_query = """
+                    UPDATE bot_info 
+                    SET status = %s 
+                    WHERE bot_id = %s
+                """
+                cursor.execute(update_query, (bot_status, bot_id))
+                conn.commit()
+
+                cursor.close()
+                conn.close()
+
+                return jsonify({"message": f"Bot status updated to {bot_status}"}), 200
+            else:
+                return jsonify({"error": "No bot information found"}), 404
+        except Exception as e:
+            cursor.close()
+            conn.close()
+            return jsonify({"error": str(e)}), 500
+
+
+
+
 
 
 @app.route('/user-servers', methods=['GET'])
