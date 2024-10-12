@@ -26,17 +26,10 @@ def get_db_connection(database):
     )
 
 
-def construct_url(filename):
-    """
-    Concatenate BASE_URL and the path, ensuring there is no double slash.
-    """
-    return f"{BASE_URL.rstrip('/')}/images/{filename}"
-
-
 def get_server_count():
     conn = get_db_connection("AbbyBot_Rei")  
     cursor = conn.cursor()
-    cursor.execute("SELECT COUNT(DISTINCT guild_id) FROM dashboard WHERE is_active = 1;")
+    cursor.execute("SELECT COUNT(DISTINCT guild_id) FROM dashboard;")
     count = cursor.fetchone()[0]
     cursor.close()
     conn.close()
@@ -148,18 +141,22 @@ def bot_info():
         conn.close()
 
         if bot_info:
+            # Call server count
+            server_count = get_server_count()
+
             return jsonify({
                 "bot_id": bot_info["bot_id"],
                 "bot_name": bot_info["bot_name"],
                 "discriminator": bot_info["discriminator"],
                 "avatar_url": bot_info["avatar_url"],
                 "banner_url": bot_info["banner_url"],
-                "server_count": bot_info["server_count"],
+                "server_count": server_count,  # get_server_count() value
                 "version": bot_info["version"],
-                "status": bot_info.get("status", "unknown") 
+                "status": bot_info.get("status", "unknown")
             })
         else:
             return jsonify({"error": "No bot information found"}), 404
+
     
     # If it is a POST request, update the bot status
     elif request.method == 'POST':
