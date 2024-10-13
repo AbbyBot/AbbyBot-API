@@ -746,8 +746,24 @@ Updates the logs_channel only in the specified guild.
 
 ```
 
+**URL:** `/privileges-info`  
+**Method:** `GET`
+
+Returns information about AbbyBot's privileges. Explaining its meaning, how to get it, XP multiplier and exclusive advantages.
+
+#### Example Response:
+```json
+privileges:
+  {
+    "exclusive_access": "TBA",
+    "id	": 1,
+    "privilege_name":"Normal User 🐱",
+    "rol_meaning": "Users who have just joined the server. No specific advantages but they earn 1.0 XP.",
+    "xp_multiplier": "1.00",
+
+  }
+```
+
 ## Notes
 
 - The bot information is periodically updated in the local database, but real-time data is fetched from the Discord API.
-
-- 
