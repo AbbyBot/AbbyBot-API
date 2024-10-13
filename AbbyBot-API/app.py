@@ -35,6 +35,71 @@ def get_server_count():
     conn.close()
     return count
 
+def bot_info():
+    conn = get_db_connection("AbbyBot_Asuka")
+    cursor = conn.cursor(dictionary=True)
+    
+    # If it is a GET request, it returns the bot information
+    if request.method == 'GET':
+        query = "SELECT * FROM bot_info LIMIT 1"
+        cursor.execute(query)
+        bot_info = cursor.fetchone()
+
+        cursor.close()
+        conn.close()
+
+        if bot_info:
+            # Call server count
+            server_count = get_server_count()
+
+            return jsonify({
+                "bot_id": bot_info["bot_id"],
+                "bot_name": bot_info["bot_name"],
+                "discriminator": bot_info["discriminator"],
+                "avatar_url": bot_info["avatar_url"],
+                "banner_url": bot_info["banner_url"],
+                "server_count": server_count,  # get_server_count() value
+                "version": bot_info["version"],
+                "version_code": bot_info["version_code"],
+                "status": bot_info.get("status", "unknown")
+            })
+        else:
+            return jsonify({"error": "No bot information found"}), 404
+def bot_info():
+    conn = get_db_connection("AbbyBot_Asuka")
+    cursor = conn.cursor(dictionary=True)
+    
+    # If it is a GET request, it returns the bot information
+    if request.method == 'GET':
+        query = "SELECT * FROM bot_info LIMIT 1"
+        cursor.execute(query)
+        bot_info = cursor.fetchone()
+
+        cursor.close()
+        conn.close()
+
+        if bot_info:
+            # Call server count
+            server_count = get_server_count()
+
+            return jsonify({
+                "bot_id": bot_info["bot_id"],
+                "bot_name": bot_info["bot_name"],
+                "discriminator": bot_info["discriminator"],
+                "avatar_url": bot_info["avatar_url"],
+                "banner_url": bot_info["banner_url"],
+                "server_count": server_count,  # get_server_count() value
+                "version": bot_info["version"],
+                "version_code": bot_info["version_code"],
+                "status": bot_info.get("status", "unknown")
+            })
+        else:
+            return jsonify({"error": "No bot information found"}), 404
+    count = cursor.fetchone()[0]
+    cursor.close()
+    conn.close()
+    return count
+
 
 def get_bot_info_from_discord():
     url = f"{DISCORD_API_BASE_URL}/users/@me"
@@ -152,6 +217,7 @@ def bot_info():
                 "banner_url": bot_info["banner_url"],
                 "server_count": server_count,  # get_server_count() value
                 "version": bot_info["version"],
+                "version_code": bot_info["version_code"],
                 "status": bot_info.get("status", "unknown")
             })
         else:
