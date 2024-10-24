@@ -1039,5 +1039,62 @@ def privileges_info():
 
 
 
+import os
+from flask import Flask, jsonify, request, send_from_directory
+from flask_cors import CORS
+
+# Define the path to your image folder
+IMAGE_FOLDER = os.path.join(os.getcwd(), 'AbbyBot-News')
+
+# Endpoint to list all photo URLs
+@app.route('/photos', methods=['GET'])
+def list_photos():
+    try:
+        # Get a list of all files in the directory
+        photos = [f for f in os.listdir(IMAGE_FOLDER) if os.path.isfile(os.path.join(IMAGE_FOLDER, f))]
+        
+        # Create URLs for each photo
+        photo_urls = [
+            {
+                "file_name": photo,
+                "url": f"{request.host_url}photos/{photo}"
+            } for photo in photos
+        ]
+
+        return jsonify(photo_urls), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# Endpoint to serve a specific photo
+@app.route('/photos/<filename>', methods=['GET'])
+def get_photo(filename):
+    try:
+        # Serve the requested file from the directory
+        return send_from_directory(IMAGE_FOLDER, filename)
+    except Exception as e:
+        return jsonify({"error": "File not found or an error occurred"}), 404
+
+# Endpoint to generate URLs for photos
+@app.route('/generate-photo-urls', methods=['POST'])
+def generate_photo_urls():
+    try:
+        # Get the list of all files in the directory
+        photos = [f for f in os.listdir(IMAGE_FOLDER) if os.path.isfile(os.path.join(IMAGE_FOLDER, f))]
+
+        # Create URLs for each photo
+        photo_urls = [
+            {
+                "file_name": photo,
+                "url": f"{request.host_url}photos/{photo}"
+            } for photo in photos
+        ]
+
+        return jsonify({
+            "generated_urls": photo_urls
+        }), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
 if __name__ == '__main__':
     app.run(debug=True, host='127.0.0.1', port=5002)
