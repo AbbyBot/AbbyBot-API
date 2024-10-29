@@ -769,6 +769,62 @@ privileges:
   }
 ```
 
+### 14. Get AbbyBot Themes
+
+**URL:** `/abbybot-themes`  
+**Method:** `GET`
+
+Returns information about all AbbyBot themes registered, with their ID, title and class themes.
+
+#### Example Response:
+```json
+{
+    "abbybot_themes": [
+        {
+            "theme_class": "abby-theme",
+            "theme_id": 1,
+            "theme_title": "Abby"
+        },
+        {
+            "theme_class": "d0z3r-theme",
+            "theme_id": 2,
+            "theme_title": "D0Z3R"
+        },
+        {
+            "theme_class": "masky-theme",
+            "theme_id": 3,
+            "theme_title": "Masky"
+        },
+        {
+            "theme_class": "nebulanight-theme",
+            "theme_id": 4,
+            "theme_title": "Nebula Night"
+        },
+        {
+            "theme_class": "lightone-theme",
+            "theme_id": 5,
+            "theme_title": "Light 01"
+        },
+        {
+            "theme_class": "mia-theme",
+            "theme_id": 6,
+            "theme_title": "MIA"
+        },
+        {
+            "theme_class": "python-theme",
+            "theme_id": 7,
+            "theme_title": "Python"
+        },
+        {
+            "theme_class": "node-theme",
+            "theme_id": 8,
+            "theme_title": "Node"
+        }
+    ]
+}
+```
+
+
 ## Notes
 
 - The bot information is periodically updated in the local database, but real-time data is fetched from the Discord API.

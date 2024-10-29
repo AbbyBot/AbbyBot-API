@@ -4,6 +4,7 @@ import requests
 import mysql.connector
 import os
 from dotenv import load_dotenv
+from datetime import datetime
 
 load_dotenv()
 
@@ -283,7 +284,6 @@ def user_servers():
         return jsonify({"error": "No data found for this user"}), 404
     
 
-
 def get_user_info(user_id):
     conn = get_db_connection("AbbyBot_Rei")  
     cursor = conn.cursor(dictionary=True)
@@ -307,6 +307,21 @@ def get_user_info(user_id):
     """
     cursor.execute(query, (user_id,))
     result = cursor.fetchone()
+
+    cursor.close()
+    conn.close()
+
+    return result
+
+def get_themes_data():
+    conn = get_db_connection("AbbyBot_Rei")  
+    cursor = conn.cursor(dictionary=True)
+    query = """
+    SELECT
+	    id, title, theme_class from AbbyBot_Themes;
+    """
+    cursor.execute(query)
+    result = cursor.fetchall()
 
     cursor.close()
     conn.close()
@@ -348,6 +363,22 @@ def user_info():
     else:
         return jsonify({"error": "No data found for this user"}), 404
 
+@app.route('/abbybot-themes', methods=['GET'])
+def get_all_themes():
+    themes_data = get_themes_data()
+
+    if themes_data:
+        return jsonify({
+            "abbybot_themes": [
+                {
+                    "theme_id": theme["id"],
+                    "theme_title": theme["title"],
+                    "theme_class": theme["theme_class"]
+                } for theme in themes_data
+            ]
+        })
+    else:
+        return jsonify({"error": "No data found for this user"}), 404
 
 @app.route('/server-dashboard', methods=['GET'])
 def get_server_dashboard():
@@ -418,9 +449,6 @@ def get_server_dashboard():
 
     finally:
         conn.close()
-
-
-from datetime import datetime
 
 
 def get_current_birthday(user_id):
