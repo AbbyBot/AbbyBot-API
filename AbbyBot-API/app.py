@@ -1,11 +1,9 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_from_directory
+from flask_cors import CORS
 import requests
 import mysql.connector
 import os
 from dotenv import load_dotenv
-from flask import send_from_directory
-from flask_cors import CORS
-
 
 load_dotenv()
 
@@ -184,7 +182,6 @@ def get_user_server_data(user_id):
         return None
 
 
-
 app = Flask(__name__)
 
 # Variable to store the state of the bot
@@ -291,7 +288,7 @@ def get_user_info(user_id):
     conn = get_db_connection("AbbyBot_Rei")  
     cursor = conn.cursor(dictionary=True)
     query = """
-        SELECT 
+    SELECT 
             up.user_username AS discord_username, 
             up.user_birthday AS birthday,
             up.user_id, 
@@ -300,7 +297,9 @@ def get_user_info(user_id):
             (SELECT COUNT(DISTINCT guild_id) 
             FROM dashboard 
             WHERE user_profile_id = up.id) AS servers_shared,
-            t.title AS abbybot_theme
+            t.id AS theme_id,
+            t.title AS theme_name,
+            t.theme_class AS theme_class
         FROM user_profile up
         LEFT JOIN privileges p ON up.user_privilege = p.id
         LEFT JOIN AbbyBot_Themes t ON up.theme_id = t.id
@@ -340,7 +339,11 @@ def user_info():
             "user_birthday": birthday,  
             "servers_shared": user_data["servers_shared"],
             "privilege": user_data["privilege"],
-            "abbybot_theme": user_data["abbybot_theme"],
+            "theme": {
+                "theme_id": user_data["theme_id"],
+                "theme_name": user_data["theme_name"],
+                "theme_class": user_data["theme_class"]
+            }
         })
     else:
         return jsonify({"error": "No data found for this user"}), 404
@@ -1037,11 +1040,6 @@ def privileges_info():
         else:
             return jsonify({"error": "No privileges information found"}), 404
 
-
-
-import os
-from flask import Flask, jsonify, request, send_from_directory
-from flask_cors import CORS
 
 # Define the path to your image folder
 IMAGE_FOLDER = os.path.join(os.getcwd(), 'AbbyBot-News')

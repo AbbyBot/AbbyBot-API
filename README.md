@@ -111,12 +111,17 @@ Returns information about the user's profile, including their Discord username, 
 #### Example Response:
 ```json
 {
-  "discord_username": "User123",
-  "account_created_at": "Sat, 14 Jul 2018 23:00:44 GMT",
-  "user_id": "987654321",
-  "user_birthday": "1986-08-12",
-  "servers_shared": 3,
-  "abbybot_theme": "Dark Theme"
+    "account_created_at": "Tue, 05 Jun 2017 15:34:20 GMT",
+    "discord_username": "unit01shinji",
+    "privilege": "Normal User 🐱",
+    "servers_shared": 3,
+    "theme": {
+        "theme_class": "abby-theme",
+        "theme_id": 1,
+        "theme_name": "Abby"
+    },
+    "user_birthday": "2001-11-22",
+    "user_id": 573829101284550144
 }
 ```
 
