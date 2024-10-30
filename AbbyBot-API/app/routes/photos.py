@@ -1,10 +1,13 @@
 from flask import Blueprint, jsonify, request, send_from_directory
 import os
 import urllib.parse
+from dotenv import load_dotenv
+
+load_dotenv()
 
 photos_bp = Blueprint('photos', __name__)
 
-IMAGE_FOLDER = os.path.join(os.getcwd(), 'AbbyBot-News')
+IMAGE_FOLDER = os.getenv('IMAGE_FOLDER_PATH')
 
 @photos_bp.route('/photos', methods=['GET'])
 def list_photos():
