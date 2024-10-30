@@ -1,6 +1,5 @@
 from flask import Blueprint, jsonify, request
 from ..utils.db import get_db_connection, get_server_count
-from ..utils.discord import get_bot_info_from_discord
 
 bot_info_bp = Blueprint('bot_info', __name__)
 

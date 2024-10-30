@@ -17,3 +17,34 @@ def get_server_count():
     cursor.close()
     conn.close()
     return count
+
+def get_user_server_data(user_id):
+    conn = get_db_connection("AbbyBot_Rei")  
+    cursor = conn.cursor(dictionary=True)
+
+    query = """
+    SELECT s.guild_id, s.guild_name, s.owner_id, d.is_admin, s.guild_icon_url, s.guild_icon_last_updated
+    FROM dashboard d
+    JOIN server_settings s ON d.guild_id = s.guild_id
+    JOIN user_profile up ON d.user_profile_id = up.id
+    LEFT JOIN privileges p ON up.user_privilege = p.id
+    WHERE up.user_id = %s;
+    """
+    
+    cursor.execute(query, (user_id,))
+    result = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    if result:
+        user_id_int = int(user_id)
+
+        for server in result:
+            server['is_owner'] = 1 if server['owner_id'] == user_id_int else 0
+            if server['guild_icon_url']:
+                server['guild_icon_url']
+
+        return result
+    else:
+        return None

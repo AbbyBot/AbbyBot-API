@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, request, send_from_directory
 import os
+import urllib.parse
 
 photos_bp = Blueprint('photos', __name__)
 
@@ -12,17 +13,18 @@ def list_photos():
         photo_urls = [
             {
                 "file_name": photo,
-                "url": f"{request.host_url}photos/{photo}"
+                "url": f"{request.host_url}photos/{urllib.parse.quote(photo)}"
             } for photo in photos
         ]
         return jsonify(photo_urls), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-@photos_bp.route('/photos/<filename>', methods=['GET'])
+@photos_bp.route('/photos/<path:filename>', methods=['GET'])
 def get_photo(filename):
     try:
-        return send_from_directory(IMAGE_FOLDER, filename)
+        decoded_filename = urllib.parse.unquote(filename)
+        return send_from_directory(IMAGE_FOLDER, decoded_filename)
     except Exception as e:
         return jsonify({"error": "File not found or an error occurred"}), 404
 
@@ -33,7 +35,7 @@ def generate_photo_urls():
         photo_urls = [
             {
                 "file_name": photo,
-                "url": f"{request.host_url}photos/{photo}"
+                "url": f"{request.host_url}photos/{urllib.parse.quote(photo)}"
             } for photo in photos
         ]
         return jsonify({
