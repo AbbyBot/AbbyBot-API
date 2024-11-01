@@ -1,5 +1,3 @@
-
-
 ![AbbyBot-Api](https://github.com/user-attachments/assets/d17a12fc-bb64-4b7c-88dc-529505f1a5c6)
 
 
@@ -824,6 +822,32 @@ Returns information about all AbbyBot themes registered, with their ID, title an
 }
 ```
 
+### 15. Get Server Channels
+
+**URL:** `/server-channels`  
+**Method:** `GET`  
+**Parameters:**
+- `guild_id`: Discord Server ID (required)
+
+Returns the list of channels in a server, including their IDs and titles.
+
+#### Example Response:
+```json
+[
+  {
+    "channel_id": 1234567898232352134,
+    "channel_title": "misato-house",
+    "guild_id": 999999999999999999,
+    "id": 54
+  },
+  {
+    "channel_id": 12343458982323234134,
+    "channel_title": "rei-party",
+    "guild_id": 999999999999999999,
+    "id": 55
+  },
+]
+```
 
 ## Notes
 
