@@ -21,4 +21,3 @@ def user_servers():
         })
     else:
         return jsonify({"error": "No data found for this user"}), 404
-    

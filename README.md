@@ -83,16 +83,24 @@ Returns the list of servers a user belongs to, their privileges, and whether the
 ```json
 {
   "user_id": "987654321",
-  "privilege_name": "Admin",
   "servers": [
-    {
-      "guild_id": "123456789",
-      "guild_name": "Test Server",
-      "owner_id": "987654321",
+      {
+      "activated_birthday": 1,
+      "activated_events": 1,
+      "activated_logs": 0,
+      "birthday_channel": 1234567890123456789,
+      "default_bot_role_id": null,
+      "default_role_id": null,
+      "guild_icon_last_updated": "Thu, 24 Oct 2024 21:33:53 GMT",
+      "guild_icon_url": "https://image-sample.com",
+      "guild_id": 9876543210123456789,
+      "guild_language": 1,
+      "guild_name": "Sever",
       "is_admin": 1,
-      "guild_icon_url": "http://localhost:5002/images/server_icon.png",
-      "is_owner": 1
-    }
+      "is_owner": 0,
+      "logs_channel": null,
+      "owner_id": 1234567890123456789
+    },
   ]
 }
 ```
