@@ -25,7 +25,7 @@ def get_user_server_data(user_id):
     query = """
     SELECT s.guild_id, s.guild_name, s.owner_id, d.is_admin, s.guild_icon_url, s.guild_icon_last_updated,
     s.activated_events, s.activated_logs, s.activated_birthday, s.birthday_channel, s.logs_channel,
-    s.guild_language, s.default_bot_role_id, s.default_role_id 
+    s.guild_language, s.default_bot_role_id, s.default_role_id, s.join_channel_id, s.kick_channel_id, s.ban_channel_id 
     FROM dashboard d
     JOIN server_settings s ON d.guild_id = s.guild_id
     JOIN user_profile up ON d.user_profile_id = up.id

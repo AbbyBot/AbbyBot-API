@@ -98,6 +98,9 @@ Returns the list of servers a user belongs to, their privileges, and whether the
       "guild_name": "Sever",
       "is_admin": 1,
       "is_owner": 0,
+      "join_channel_id": null,
+      "kick_channel_id": null,
+      "logs_channel": null,
       "logs_channel": null,
       "owner_id": 1234567890123456789
     },
