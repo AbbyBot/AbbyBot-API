@@ -31,6 +31,7 @@ def create_app():
     from .routes.view_handler import view_handler_bp
     from .routes.abbybot_themes import abbybot_themes_bp
     from .routes.server_channels import server_channels_bp
+    from .routes.update_channels import update_channel_bd
 
     app.register_blueprint(bot_info_bp)
     app.register_blueprint(user_info_bp)
@@ -50,6 +51,7 @@ def create_app():
     app.register_blueprint(view_handler_bp)
     app.register_blueprint(abbybot_themes_bp)
     app.register_blueprint(server_channels_bp)
+    app.register_blueprint(update_channel_bd)
 
     return app
 
