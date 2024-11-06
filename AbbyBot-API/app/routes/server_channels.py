@@ -29,8 +29,8 @@ def get_server_dashboard():
             for row in result:
                 channel_data = {
                     'id': row[0],
-                    'guild_id': row[1],
-                    'channel_id': row[2],
+                    'guild_id': str(row[1]),
+                    'channel_id': str(row[2]),
                     'channel_title': row[3]
                 }
                 channel_list.append(channel_data)

@@ -43,6 +43,7 @@ def get_user_server_data(user_id):
         user_id_int = int(user_id)
 
         for server in result:
+            server['guild_id'] = str(server['guild_id'])
             server['is_owner'] = 1 if server['owner_id'] == user_id_int else 0
             if server['guild_icon_url']:
                 server['guild_icon_url']
