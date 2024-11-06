@@ -19,7 +19,7 @@ def bot_info():
         if bot_info:
             server_count = get_server_count()
             return jsonify({
-                "bot_id": bot_info["bot_id"],
+                "bot_id": str(bot_info["bot_id"]),
                 "bot_name": bot_info["bot_name"],
                 "discriminator": bot_info["discriminator"],
                 "avatar_url": bot_info["avatar_url"],
@@ -44,7 +44,7 @@ def bot_info():
             bot_info = cursor.fetchone()
 
             if bot_info:
-                bot_id = bot_info["bot_id"]
+                bot_id = str(bot_info["bot_id"])
                 update_query = """
                     UPDATE bot_info 
                     SET status = %s 

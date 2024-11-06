@@ -43,8 +43,16 @@ def get_user_server_data(user_id):
         user_id_int = int(user_id)
 
         for server in result:
-            server['guild_id'] = str(server['guild_id'])
-            server['is_owner'] = 1 if server['owner_id'] == user_id_int else 0
+            server['guild_id'] = str(server['guild_id']) if server['guild_id'] is not None else None
+            server['owner_id'] = str(server['owner_id']) if server['owner_id'] is not None else None
+            server['birthday_channel'] = str(server['birthday_channel']) if server['birthday_channel'] is not None else None
+            server['logs_channel'] = str(server['logs_channel']) if server['logs_channel'] is not None else None
+            server['default_bot_role_id'] = str(server['default_bot_role_id']) if server['default_bot_role_id'] is not None else None
+            server['default_role_id'] = str(server['default_role_id']) if server['default_role_id'] is not None else None
+            server['join_channel_id'] = str(server['join_channel_id']) if server['join_channel_id'] is not None else None
+            server['kick_channel_id'] = str(server['kick_channel_id']) if server['kick_channel_id'] is not None else None
+            server['ban_channel_id'] = str(server['ban_channel_id']) if server['ban_channel_id'] is not None else None
+            server['is_owner'] = 1 if server['owner_id'] == str(user_id_int) else 0
             if server['guild_icon_url']:
                 server['guild_icon_url']
 

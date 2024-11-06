@@ -27,4 +27,7 @@ def get_user_info(user_id):
     cursor.close()
     conn.close()
 
+    if result:
+        result["user_id"] = str(result["user_id"])
+
     return result
