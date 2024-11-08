@@ -16,7 +16,7 @@ def user_servers():
 
     if user_data and user_info:
         return jsonify({
-            "user_id": str(user_id) if user_id is not None else None,
+            "user_id": str(user_id),
             "servers": user_data
         })
     else:
