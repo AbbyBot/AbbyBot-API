@@ -28,6 +28,10 @@ def create_app():
     from .routes.set_birthday_channel import set_birthday_channel_bp
     from .routes.set_logs_channel import set_logs_channel_bp
     from .routes.privileges_info import privileges_info_bp
+    from .routes.view_handler import view_handler_bp
+    from .routes.abbybot_themes import abbybot_themes_bp
+    from .routes.server_channels import server_channels_bp
+    from .routes.update_channels import update_channel_bd
 
     app.register_blueprint(bot_info_bp)
     app.register_blueprint(user_info_bp)
@@ -44,6 +48,10 @@ def create_app():
     app.register_blueprint(set_birthday_channel_bp)
     app.register_blueprint(set_logs_channel_bp)
     app.register_blueprint(privileges_info_bp)
+    app.register_blueprint(view_handler_bp)
+    app.register_blueprint(abbybot_themes_bp)
+    app.register_blueprint(server_channels_bp)
+    app.register_blueprint(update_channel_bd)
 
     return app
 

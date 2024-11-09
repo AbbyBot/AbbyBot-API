@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
 from ..utils.birthday_utils import get_current_birthday, update_user_birthday
-import datetime
+from datetime import datetime
 
 update_birthday_bd = Blueprint('update_abbybot', __name__)
 

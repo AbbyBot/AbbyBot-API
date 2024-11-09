@@ -22,7 +22,7 @@ def user_info():
         return jsonify({
             "discord_username": user_data["discord_username"],
             "account_created_at": user_data["account_created_at"] or "No data available",
-            "user_id": user_data["user_id"],
+            "user_id": str(user_data["user_id"]),
             "user_birthday": birthday,  
             "servers_shared": user_data["servers_shared"],
             "privilege": user_data["privilege"],

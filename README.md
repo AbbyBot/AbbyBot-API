@@ -1,5 +1,3 @@
-
-
 ![AbbyBot-Api](https://github.com/user-attachments/assets/d17a12fc-bb64-4b7c-88dc-529505f1a5c6)
 
 
@@ -85,16 +83,27 @@ Returns the list of servers a user belongs to, their privileges, and whether the
 ```json
 {
   "user_id": "987654321",
-  "privilege_name": "Admin",
   "servers": [
-    {
-      "guild_id": "123456789",
-      "guild_name": "Test Server",
-      "owner_id": "987654321",
+      {
+      "activated_birthday": 1,
+      "activated_events": 1,
+      "activated_logs": 0,
+      "birthday_channel": 1234567890123456789,
+      "default_bot_role_id": null,
+      "default_role_id": null,
+      "guild_icon_last_updated": "Thu, 24 Oct 2024 21:33:53 GMT",
+      "guild_icon_url": "https://image-sample.com",
+      "guild_id": 9876543210123456789,
+      "guild_language": 1,
+      "guild_name": "Sever",
       "is_admin": 1,
-      "guild_icon_url": "http://localhost:5002/images/server_icon.png",
-      "is_owner": 1
-    }
+      "is_owner": 0,
+      "join_channel_id": null,
+      "kick_channel_id": null,
+      "ban_channel_id": null,
+      "logs_channel": null,
+      "owner_id": 1234567890123456789
+    },
   ]
 }
 ```
@@ -823,6 +832,185 @@ Returns information about all AbbyBot themes registered, with their ID, title an
     ]
 }
 ```
+
+### 15. Get Server Channels
+
+**URL:** `/server-channels`  
+**Method:** `GET`  
+**Parameters:**
+- `guild_id`: Discord Server ID (required)
+
+Returns the list of channels in a server, including their IDs and titles.
+
+#### Example Response:
+```json
+[
+  {
+    "channel_id": 1234567898232352134,
+    "channel_title": "misato-house",
+    "guild_id": 999999999999999999,
+    "id": 54
+  },
+  {
+    "channel_id": 12343458982323234134,
+    "channel_title": "rei-party",
+    "guild_id": 999999999999999999,
+    "id": 55
+  },
+]
+```
+
+
+
+### 16. Update AbbyBot JOIN card channel
+
+**URL:** `/update-join-channel`  
+**Method:** `POST`  
+**Parameters:**
+- `guild_id`: The Guild ID (required).
+- `join_channel_id`: The ID for show kick card (required).
+
+Updates the prefix only in the specified guild.
+
+#### Example Request:
+```json
+{
+  "guild_id": "123456789012345678",
+  "join_channel_id": 123456789012345678
+}
+
+```
+
+#### Example Response (Updated join_channel_id):
+```json
+{
+  "success": "Changed join_channel_id for guild 123456789012345678",
+  "status_code": 200
+}
+
+
+```
+
+
+#### Example Response (No Update Needed):
+```json
+{
+  "info": "No update needed, the join_channel_id value is already set",
+  "status_code": 200
+}
+
+
+```
+#### Example Response (No Guild Found):
+```json
+{
+  "info": "No guild found with the provided guild_id",
+  "status_code": 404
+}
+
+
+```
+
+### 16. Update AbbyBot KICK card channel
+
+**URL:** `/update-kick-channel`  
+**Method:** `POST`  
+**Parameters:**
+- `guild_id`: The Guild ID (required).
+- `kick_channel_id`: The ID for show kick card (required).
+
+Updates the prefix only in the specified guild.
+
+#### Example Request:
+```json
+{
+  "guild_id": "123456789012345678",
+  "kick_channel_id": 123456789012345678
+}
+
+```
+
+#### Example Response (Updated kick_channel_id):
+```json
+{
+  "success": "Changed kick_channel_id for guild 123456789012345678",
+  "status_code": 200
+}
+
+
+```
+
+
+#### Example Response (No Update Needed):
+```json
+{
+  "info": "No update needed, the kick_channel_id value is already set",
+  "status_code": 200
+}
+
+
+```
+#### Example Response (No Guild Found):
+```json
+{
+  "info": "No guild found with the provided guild_id",
+  "status_code": 404
+}
+
+
+```
+
+
+### 17. Update AbbyBot BAN card channel
+
+**URL:** `/update-ban-channel`  
+**Method:** `POST`  
+**Parameters:**
+- `guild_id`: The Guild ID (required).
+- `ban_channel_id`: The ID for show ban card (required).
+
+Updates the prefix only in the specified guild.
+
+#### Example Request:
+```json
+{
+  "guild_id": "123456789012345678",
+  "ban_channel_id": 123456789012345678
+}
+
+```
+
+#### Example Response (Updated ban_channel_id):
+```json
+{
+  "success": "Changed ban_channel_id for guild 123456789012345678",
+  "status_code": 200
+}
+
+
+```
+
+
+#### Example Response (No Update Needed):
+```json
+{
+  "info": "No update needed, the ban_channel_id value is already set",
+  "status_code": 200
+}
+
+
+```
+#### Example Response (No Guild Found):
+```json
+{
+  "info": "No guild found with the provided guild_id",
+  "status_code": 404
+}
+
+
+```
+
+
 
 
 ## Notes

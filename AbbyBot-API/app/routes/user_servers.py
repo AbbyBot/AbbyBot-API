@@ -16,9 +16,8 @@ def user_servers():
 
     if user_data and user_info:
         return jsonify({
-            "user_id": user_id,
+            "user_id": str(user_id),
             "servers": user_data
         })
     else:
         return jsonify({"error": "No data found for this user"}), 404
-    

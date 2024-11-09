@@ -46,3 +46,17 @@ def update_abbybot_theme(user_id, theme_id):
     finally:
         cursor.close()
         conn.close()
+
+def get_themes_data():
+    conn = get_db_connection("AbbyBot_Rei")  
+    cursor = conn.cursor(dictionary=True)
+    query = """
+    SELECT
+	    id, title, theme_class from AbbyBot_Themes;
+    """
+    cursor.execute(query)
+    result = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return result
+

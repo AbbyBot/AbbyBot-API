@@ -20,6 +20,7 @@ def get_server_dashboard():
                         d.user_server_nickname AS 'Nickname in server',
                         CASE 
                             WHEN ss.owner_id = up.user_id THEN 'Owner'
+                            WHEN d.is_bot = 1 THEN 'BOT'
                             WHEN d.is_admin = 1 THEN 'Admin'
                             ELSE 'User'
                         END AS 'User type',
@@ -54,7 +55,7 @@ def get_server_dashboard():
                 if user_id not in dashboard:
                     dashboard[user_id] = {
                         'username': row[0],
-                        'nickname in server': row[1],
+                        'nickname_in_server': row[1],
                         'user_type': row[2],
                         'user_id': row[3],
                         'server_roles': [],
