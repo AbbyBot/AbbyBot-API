@@ -6,10 +6,13 @@ server_dashboard_bp = Blueprint('server_dashboard', __name__)
 @server_dashboard_bp.route('/server-dashboard', methods=['GET'])
 def get_server_dashboard():
     guild_id = request.args.get('guild_id')
+    tab = request.args.get('tab', 1)
 
     if not guild_id:
         return jsonify({'error': 'Missing required parameter: guild_id'}), 400
     
+
+
     conn = get_db_connection("AbbyBot_Rei")
     
     try:
@@ -38,11 +41,13 @@ def get_server_dashboard():
                     WHERE 
                         d.guild_id = %s
                     ORDER BY 
-                        up.user_username, ur.role_name;
+                        up.user_username, ur.role_name
+                    LIMIT 20 OFFSET %s
             """
-            cursor.execute(query, (guild_id,))
+            cursor.execute(query, (guild_id, (tab - 1) * 20))
             result = cursor.fetchall()
-
+            
+            response_object = []
             dashboard = {}
             for row in result:
                 user_id = row[3]
@@ -64,7 +69,12 @@ def get_server_dashboard():
                 if row[4]:
                     dashboard[user_id]['server_roles'].append(row[4])
 
-            return jsonify(list(dashboard.values()))
+            response_object = {
+                'users': list(dashboard.values()),
+                'total_users': len(dashboard),
+                'tab': tab
+            }
+            return jsonify(response_object), 200
 
     finally:
         conn.close()
