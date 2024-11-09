@@ -44,6 +44,7 @@ def get_server_dashboard():
                         up.user_username, ur.role_name
                     LIMIT 20 OFFSET %s
             """
+            tab = int(tab)
             cursor.execute(query, (guild_id, (tab - 1) * 20))
             result = cursor.fetchall()
             
@@ -75,6 +76,7 @@ def get_server_dashboard():
                 'tab': tab
             }
             return jsonify(response_object), 200
-
+    except:
+        return jsonify({'users': [], 'total_users': 0}), 200
     finally:
         conn.close()
