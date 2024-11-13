@@ -6,7 +6,8 @@ server_dashboard_bp = Blueprint('server_dashboard', __name__)
 @server_dashboard_bp.route('/server-dashboard', methods=['GET'])
 def get_server_dashboard():
     guild_id = request.args.get('guild_id')
-    tab = request.args.get('tab', 1)
+    page = request.args.get('page', 1)
+    limit = 10
 
     if not guild_id:
         return jsonify({'error': 'Missing required parameter: guild_id'}), 400
@@ -42,15 +43,16 @@ def get_server_dashboard():
                         d.guild_id = %s
                     ORDER BY 
                         up.user_username, ur.role_name
-                    LIMIT 20 OFFSET %s
             """
-            tab = int(tab)
-            cursor.execute(query, (guild_id, (tab - 1) * 20))
-            result = cursor.fetchall()
-            
-            response_object = []
+            count_query = "SELECT member_count from server_settings WHERE guild_id = %s"
+            page = int(page)
+
+            # Fetching user data
+            cursor.execute(query, (guild_id,))
+            user_data = cursor.fetchall()
+
             dashboard = {}
-            for row in result:
+            for row in user_data:
                 user_id = row[3]
                 birthday_date = row[5]
                 if birthday_date:
@@ -69,11 +71,18 @@ def get_server_dashboard():
                     }
                 if row[4]:
                     dashboard[user_id]['server_roles'].append(row[4])
+            users = list(dashboard.values())[(page-1)*limit:page*limit]
 
+
+            # Fetching total members count
+            cursor.execute(count_query, (guild_id,))
+            total_members = cursor.fetchone()
+            
             response_object = {
-                'users': list(dashboard.values()),
-                'total_users': len(dashboard),
-                'tab': tab
+                'users': users,
+                'total_users': total_members[0],
+                'page_users': len(users),
+                'page': page
             }
             return jsonify(response_object), 200
     except:
