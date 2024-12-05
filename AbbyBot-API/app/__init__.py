@@ -33,6 +33,7 @@ def create_app():
     from .routes.server_channels import server_channels_bp
     from .routes.update_channels import update_channel_bd
     from .routes.add_wishlist_user import add_wishlist_bp
+    from .routes.api_status import status_bp
 
     app.register_blueprint(bot_info_bp)
     app.register_blueprint(user_info_bp)
@@ -54,6 +55,7 @@ def create_app():
     app.register_blueprint(server_channels_bp)
     app.register_blueprint(update_channel_bd)
     app.register_blueprint(add_wishlist_bp)
+    app.register_blueprint(status_bp)
 
     return app
 
