@@ -1054,6 +1054,64 @@ Adds a new user to the wishlist if the Discord username does not already exist.
 ```
 
 
+### 19. Get News List
+
+**URL:** `/news`  
+**Method:** `GET`
+
+Returns a list of news articles, including their ID, title, description, content, image URL, category, creation date, and slug.
+
+#### Example Response:
+```json
+{
+  "news": [
+    {
+      "id": 1,
+      "title": "New Feature Release",
+      "description": "We have released a new feature...",
+      "content": "Detailed content of the news article...",
+      "image_url": "https://example.com/news/image1.png",
+      "category": "Release",
+      "created_at": "2023-10-01T12:00:00Z",
+      "slug": "new-feature-release"
+    },
+    {
+      "id": 2,
+      "title": "Maintenance Update",
+      "description": "Scheduled maintenance on...",
+      "content": "Detailed content of the maintenance update...",
+      "image_url": "https://example.com/news/image2.png",
+      "category": "Maintenance",
+      "created_at": "2023-10-05T08:00:00Z",
+      "slug": "maintenance-update"
+    }
+  ]
+}
+```
+
+### 20. Get News by Slug
+
+**URL:** `/news/<slug>`  
+**Method:** `GET`  
+**Parameters:**
+- `slug`: The slug of the news article (required)
+
+Returns a single news article based on the provided slug, including its ID, title, description, content, image URL, category, creation date, and slug.
+
+#### Example Response:
+```json
+{
+  "id": 1,
+  "title": "New Feature Release",
+  "description": "We have released a new feature...",
+  "content": "Detailed content of the news article...",
+  "image_url": "https://example.com/news/image1.png",
+  "category": "Release",
+  "created_at": "2023-10-01T12:00:00Z",
+  "slug": "new-feature-release"
+}
+```
+
 ## Notes
 
 - The bot information is periodically updated in the local database, but real-time data is fetched from the Discord API.

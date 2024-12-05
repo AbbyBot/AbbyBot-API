@@ -2,7 +2,7 @@ from ..utils.db import get_db_connection
 
 def fetch_news():
     conn = get_db_connection("AbbyBot_Asuka")
-    cursor = conn.cursor()
+    cursor = conn.cursor(dictionary=True)
 
     try:
         query = """
@@ -20,7 +20,7 @@ def fetch_news():
 
 def fetch_news_by_slug(slug):
     conn = get_db_connection("AbbyBot_Asuka")
-    cursor = conn.cursor()
+    cursor = conn.cursor(dictionary=True)
 
     try:
         query = """
