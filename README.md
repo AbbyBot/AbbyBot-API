@@ -1011,6 +1011,47 @@ Updates the prefix only in the specified guild.
 ```
 
 
+### 18. Add Wishlist User
+
+**URL:** `/add-wishlist`  
+**Method:** `POST`  
+**Parameters:**
+- `name`: The name of the user (required).
+- `email`: The email of the user (required).
+- `discord_username`: The Discord username of the user (required).
+- `reason`: The reason for adding to the wishlist (optional field).
+- `how_learned`: How the user learned about the wishlist (optional field).
+
+Adds a new user to the wishlist if the Discord username does not already exist.
+
+#### Example Request:
+```json
+{
+  "name": "John Smith",
+  "email": "john.smith@example.com",
+  "discord_username": "john_smith", // 
+  "reason": "Interested in the project",
+  "how_learned": "Through a friend"
+}
+```
+
+> Note: If you use the old format (user#9999) or the new one (user), the system will auto-validate the form anyway!
+
+#### Example Response (User Added):
+```json
+{
+  "success": "User added to the wishlist",
+  "status_code": 200
+}
+```
+
+#### Example Response (User Already Exists):
+```json
+{
+  "error": "User with this Discord username already exists",
+  "status_code": 400
+}
+```
 
 
 ## Notes

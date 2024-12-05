@@ -1,12 +1,17 @@
 from ..utils.db import get_db_connection
+import re  # Import the regular expression library
 
-def add_wishlist(name, email, discord_username, reason, how_learned):
+def add_wishlist(name, email, discord_username, reason=None, how_learned=None):
     # Normalize data before insert
     name = name.capitalize()
     email = email.lower()
-    discord_username = discord_username.lower()
-    reason = reason.capitalize()
-    how_learned = how_learned.capitalize()
+    # Clean and validate the Discord username
+    discord_username = discord_username.lower().split('#')[0]
+    if not re.match("^[a-zA-Z0-9_.]+$", discord_username):
+        return "Invalid Discord username. Only letters, numbers, underscores, and dots are allowed."
+
+    reason = reason.capitalize() if reason else "Not Provided"
+    how_learned = how_learned.capitalize() if how_learned else "Not Provided"
 
     # Database connection
     conn = get_db_connection("AbbyBot_Asuka")
@@ -28,7 +33,7 @@ def add_wishlist(name, email, discord_username, reason, how_learned):
     VALUES (%s, %s, %s, %s, %s);
     """
     cursor.execute(insert_query, (name, email, discord_username, reason, how_learned))
-    conn.commit() 
+    conn.commit()
 
     cursor.close()
     conn.close()
