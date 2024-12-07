@@ -54,6 +54,23 @@ def get_all_commands(language_id=1):
         cursor.close()
         conn.close()
 
+def get_categories():
+    conn = get_db_connection("AbbyBot_Rei")
+    cursor = conn.cursor()
+
+    try:
+        query = """
+            SELECT `category_name`
+            FROM `help_categories`;
+        """
+        cursor.execute(query)
+        results = cursor.fetchall()
+        formatted_results = [{"category_name": row[0]} for row in results]
+        return formatted_results
+    finally:
+        cursor.close()
+        conn.close()
+
 def get_control_commands(language_id=1):
     return get_commands_by_category('/control', language_id)
 

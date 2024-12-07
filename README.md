@@ -1165,6 +1165,30 @@ Return a list of commands, only the type specified in 'categories',
 ]
 ```
 
+### 23. Get Command Categories list
+
+**URL:** `/abbybot_commands/categories`  
+**Method:** `GET`  
+
+Retun a list of all command categories registered for AbbyBot Commands endpoints.
+
+#### Example Response:
+```json
+[
+    {
+        "category_name": "/control"
+    },
+    {
+        "category_name": "/admin"
+    },
+    {
+        "category_name": "/minigames"
+    },
+    {
+        "category_name": "/user"
+    }
+]
+```
 
 
 ## Notes
