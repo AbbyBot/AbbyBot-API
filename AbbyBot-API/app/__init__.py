@@ -35,6 +35,7 @@ def create_app():
     from .routes.add_wishlist_user import add_wishlist_bp
     from .routes.api_status import status_bp
     from .routes.news_list import news_list_bp
+    from .routes.abbybot_commands import abbybot_commands_bp
 
     app.register_blueprint(bot_info_bp)
     app.register_blueprint(user_info_bp)
@@ -58,6 +59,7 @@ def create_app():
     app.register_blueprint(add_wishlist_bp)
     app.register_blueprint(status_bp)
     app.register_blueprint(news_list_bp)
+    app.register_blueprint(abbybot_commands_bp)
 
     return app
 

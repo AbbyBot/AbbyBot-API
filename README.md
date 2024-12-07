@@ -1112,6 +1112,61 @@ Returns a single news article based on the provided slug, including its ID, titl
 }
 ```
 
+### 21. Get All Commands
+
+**URL:** `/abbybot_commands`  
+**Method:** `GET`  
+**Parameters:**
+- `language_id`: The ID of the language for the commands (optional, default is 1)
+
+Returns a list of all commands available in the specified language.
+
+#### Example Response:
+```json
+[
+    {
+        "command": "help",
+        "description": "Displays help information",
+        "usage": "/help"
+    },
+    {
+        "command": "play",
+        "description": "Plays a song",
+        "usage": "/play <song_name>"
+    }
+    // ...more commands...
+]
+```
+
+### 22. Get Command by category
+
+**URL:** `/abbybot_commands/<categories>`  
+**Method:** `GET`  
+**Parameters:**
+- `language_id`: The ID of the language for the commands (optional, default is 1)
+
+Return a list of commands, only the type specified in 'categories', 
+
+### Command Example: /abbybot_commands/control
+
+#### Example Response:
+```json
+[
+    {
+        "command": "/help",
+        "description": "NeedC assistance with AbbyBot? 🤖 This command shows a list of available commands and their functions.",
+        "usage": "/help"
+    },
+    {
+        "command": "/ping",
+        "description": "Check your ping 🏓.",
+        "usage": "/ping"
+    }
+]
+```
+
+
+
 ## Notes
 
 - The bot information is periodically updated in the local database, but real-time data is fetched from the Discord API.
