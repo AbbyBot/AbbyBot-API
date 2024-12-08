@@ -1190,7 +1190,66 @@ Retun a list of all command categories registered for AbbyBot Commands endpoints
 ]
 ```
 
+### 24. Get all AbbyBot privileges
 
-## Notes
+**URL:** `/privileges`  
+**Method:** `GET`  
 
-- The bot information is periodically updated in the local database, but real-time data is fetched from the Discord API.
+Retun a list of all command categories registered for AbbyBot Commands endpoints.
+
+#### Example Response:
+```json
+[
+    {
+        "exclusive_access": "TBA",
+        "how_to_get": "Automatically assigned to every new user.",
+        "privilege_name": "Normal User 🐱",
+        "rol_meaning": "Users who have just joined the server. No specific advantages but they earn 1.0 XP.",
+        "value": 1,
+        "xp_multiplier": "1.00"
+    },
+    /// more privileges...
+]
+```
+
+### 24. Get all AbbyBot privileges
+
+**URL:** `/privileges`  
+**Method:** `GET`  
+
+Retun a list of all command categories registered for AbbyBot Commands endpoints.
+
+#### Example Response:
+```json
+[
+    {
+        "exclusive_access": "TBA",
+        "how_to_get": "Automatically assigned to every new user.",
+        "privilege_name": "Normal User 🐱",
+        "rol_meaning": "Users who have just joined the server. No specific advantages but they earn 1.0 XP.",
+        "value": 1,
+        "xp_multiplier": "1.00"
+    },
+    /// more privileges...
+]
+```
+
+
+### 25. Get all AbbyBot Server Stats
+
+**URL:** `/server_stats`  
+**Method:** `GET`  
+
+Return a list of AbbyBot info, like users count, xp, servers.
+
+#### Example Response:
+```json
+[
+    {
+        "servers_using_abbybot": 4,
+        "users_served": 45,
+        "xp_earned": "721"
+    }
+]
+```
+>Note: The bot information is periodically updated in the local database, but real-time data is fetched from the Discord API.
