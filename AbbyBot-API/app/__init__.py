@@ -2,13 +2,12 @@ from flask import Flask
 from flask_cors import CORS
 from dotenv import load_dotenv
 
-
 load_dotenv()
 
 def create_app():
     app = Flask(__name__)
     
-    CORS(app, resources={r"/*": {"origins": ["http://localhost:5173", "https://api.abbybotproject.com", "http://localhost:5000"],
+    CORS(app, resources={r"/*": {"origins": "*",  # Allow all origins
                                  "methods": ["GET", "POST", "OPTIONS"],
                                  "allow_headers": ["Content-Type", "Authorization"]
                                 }})
