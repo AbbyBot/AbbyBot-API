@@ -1112,6 +1112,144 @@ Returns a single news article based on the provided slug, including its ID, titl
 }
 ```
 
-## Notes
+### 21. Get All Commands
 
-- The bot information is periodically updated in the local database, but real-time data is fetched from the Discord API.
+**URL:** `/abbybot_commands`  
+**Method:** `GET`  
+**Parameters:**
+- `language_id`: The ID of the language for the commands (optional, default is 1)
+
+Returns a list of all commands available in the specified language.
+
+#### Example Response:
+```json
+[
+    {
+        "command": "help",
+        "description": "Displays help information",
+        "usage": "/help"
+    },
+    {
+        "command": "play",
+        "description": "Plays a song",
+        "usage": "/play <song_name>"
+    }
+    // ...more commands...
+]
+```
+
+### 22. Get Command by category
+
+**URL:** `/abbybot_commands/<categories>`  
+**Method:** `GET`  
+**Parameters:**
+- `language_id`: The ID of the language for the commands (optional, default is 1)
+
+Return a list of commands, only the type specified in 'categories', 
+
+### Command Example: /abbybot_commands/control
+
+#### Example Response:
+```json
+[
+    {
+        "command": "/help",
+        "description": "NeedC assistance with AbbyBot? 🤖 This command shows a list of available commands and their functions.",
+        "usage": "/help"
+    },
+    {
+        "command": "/ping",
+        "description": "Check your ping 🏓.",
+        "usage": "/ping"
+    }
+]
+```
+
+### 23. Get Command Categories list
+
+**URL:** `/abbybot_commands/categories`  
+**Method:** `GET`  
+
+Retun a list of all command categories registered for AbbyBot Commands endpoints.
+
+#### Example Response:
+```json
+[
+    {
+        "category_name": "/control"
+    },
+    {
+        "category_name": "/admin"
+    },
+    {
+        "category_name": "/minigames"
+    },
+    {
+        "category_name": "/user"
+    }
+]
+```
+
+### 24. Get all AbbyBot privileges
+
+**URL:** `/privileges`  
+**Method:** `GET`  
+
+Retun a list of all command categories registered for AbbyBot Commands endpoints.
+
+#### Example Response:
+```json
+[
+    {
+        "exclusive_access": "TBA",
+        "how_to_get": "Automatically assigned to every new user.",
+        "privilege_name": "Normal User 🐱",
+        "rol_meaning": "Users who have just joined the server. No specific advantages but they earn 1.0 XP.",
+        "value": 1,
+        "xp_multiplier": "1.00"
+    },
+    /// more privileges...
+]
+```
+
+### 24. Get all AbbyBot privileges
+
+**URL:** `/privileges`  
+**Method:** `GET`  
+
+Retun a list of all command categories registered for AbbyBot Commands endpoints.
+
+#### Example Response:
+```json
+[
+    {
+        "exclusive_access": "TBA",
+        "how_to_get": "Automatically assigned to every new user.",
+        "privilege_name": "Normal User 🐱",
+        "rol_meaning": "Users who have just joined the server. No specific advantages but they earn 1.0 XP.",
+        "value": 1,
+        "xp_multiplier": "1.00"
+    },
+    /// more privileges...
+]
+```
+
+
+### 25. Get all AbbyBot Server Stats
+
+**URL:** `/server_stats`  
+**Method:** `GET`  
+
+Return a list of AbbyBot info, like users count, xp, servers.
+
+#### Example Response:
+```json
+[
+    {
+        "servers_using_abbybot": 4,
+        "users_served": 45,
+        "xp_earned": "721"
+    }
+]
+```
+>Note: The bot information is periodically updated in the local database, but real-time data is fetched from the Discord API.

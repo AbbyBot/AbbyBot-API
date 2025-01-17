@@ -2,13 +2,12 @@ from flask import Flask
 from flask_cors import CORS
 from dotenv import load_dotenv
 
-
 load_dotenv()
 
 def create_app():
     app = Flask(__name__)
     
-    CORS(app, resources={r"/*": {"origins": ["http://localhost:5173", "https://api.abbybotproject.com", "http://localhost:5000"],
+    CORS(app, resources={r"/*": {"origins": "*",  # Allow all origins
                                  "methods": ["GET", "POST", "OPTIONS"],
                                  "allow_headers": ["Content-Type", "Authorization"]
                                 }})
@@ -35,6 +34,8 @@ def create_app():
     from .routes.add_wishlist_user import add_wishlist_bp
     from .routes.api_status import status_bp
     from .routes.news_list import news_list_bp
+    from .routes.abbybot_commands import abbybot_commands_bp
+    from .routes.abbybot_server_stats import abbybot_server_stats_bp
 
     app.register_blueprint(bot_info_bp)
     app.register_blueprint(user_info_bp)
@@ -58,6 +59,8 @@ def create_app():
     app.register_blueprint(add_wishlist_bp)
     app.register_blueprint(status_bp)
     app.register_blueprint(news_list_bp)
+    app.register_blueprint(abbybot_commands_bp)
+    app.register_blueprint(abbybot_server_stats_bp)
 
     return app
 
