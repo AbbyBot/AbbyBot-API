@@ -36,6 +36,7 @@ def create_app():
     from .routes.news_list import news_list_bp
     from .routes.abbybot_commands import abbybot_commands_bp
     from .routes.abbybot_server_stats import abbybot_server_stats_bp
+    from .routes.server_info import server_info_bp
 
     app.register_blueprint(bot_info_bp)
     app.register_blueprint(user_info_bp)
@@ -61,6 +62,7 @@ def create_app():
     app.register_blueprint(news_list_bp)
     app.register_blueprint(abbybot_commands_bp)
     app.register_blueprint(abbybot_server_stats_bp)
+    app.register_blueprint(server_info_bp)
 
     return app
 
