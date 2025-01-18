@@ -1252,4 +1252,50 @@ Return a list of AbbyBot info, like users count, xp, servers.
     }
 ]
 ```
+
+
+### 26. Get Server info
+
+**URL** `/server-info?guild_id`
+**Method:** `GET`  
+**Parameters:**
+- `guild_id`: Discord guild ID (required)
+
+Return the guild info and values of settings, like assigned channels, language, prefix, etc.
+
+#### Example Response:
+```json
+```json
+[
+  {
+    "activated_ban_channel": 1,
+    "activated_birthday": 1,
+    "activated_events": 0,
+    "activated_join_channel": 1,
+    "activated_kick_channel": 0,
+    "activated_logs": 1,
+    "ban_channel_id": 123456789012345678,
+    "birthday_channel": 987654321098765432,
+    "default_bot_role_id": null,
+    "default_role_id": 234567890123456789,
+    "guild_icon_url": "https://cdn.discordapp.com/icons/123456789012345678/abcdef1234567890abcdef1234567890.png?size=1024",
+    "guild_id": 123456789012345678,
+    "guild_language": "Spanish",
+    "guild_name": "Random Guild",
+    "join_channel_id": 345678901234567890,
+    "kick_channel_id": null,
+    "logs_channel": 456789012345678901,
+    "member_count": 100,
+    "owner_username": "randomuser",
+    "prefix": "random_"
+  }
+]
+```
+
+
+
+
+
+
+
 >Note: The bot information is periodically updated in the local database, but real-time data is fetched from the Discord API.
