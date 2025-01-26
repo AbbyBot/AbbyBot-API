@@ -1,7 +1,8 @@
 from ..utils.db import get_db_connection
+import os
 
 def fetch_news():
-    conn = get_db_connection("AbbyBot_Asuka")
+    conn = get_db_connection(os.getenv("DB_API_NAME"))
     cursor = conn.cursor(dictionary=True)
 
     try:
@@ -19,7 +20,7 @@ def fetch_news():
         conn.close()
 
 def fetch_news_by_slug(slug):
-    conn = get_db_connection("AbbyBot_Asuka")
+    conn = get_db_connection(os.getenv("DB_API_NAME"))
     cursor = conn.cursor(dictionary=True)
 
     try:
