@@ -1,7 +1,8 @@
 from ..utils.db import get_db_connection
+import os
 
 def get_commands_by_category(category_name, language_id=1):
-    conn = get_db_connection("AbbyBot_Rei")
+    conn = get_db_connection(os.getenv('DB_DISCORD_NAME'))
     cursor = conn.cursor()
 
     try:
@@ -30,7 +31,7 @@ def get_commands_by_category(category_name, language_id=1):
         conn.close()
 
 def get_all_commands(language_id=1):
-    conn = get_db_connection("AbbyBot_Rei")
+    conn = get_db_connection(os.getenv('DB_DISCORD_NAME'))
     cursor = conn.cursor()
 
     try:
@@ -55,7 +56,7 @@ def get_all_commands(language_id=1):
         conn.close()
 
 def get_categories():
-    conn = get_db_connection("AbbyBot_Rei")
+    conn = get_db_connection(os.getenv('DB_DISCORD_NAME'))
     cursor = conn.cursor()
 
     try:
