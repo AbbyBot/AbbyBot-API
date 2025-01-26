@@ -1,7 +1,8 @@
+import os
 from ..utils.db import get_db_connection
 
 def toggle_logs(guild_id, activated_logs):
-    conn = get_db_connection("AbbyBot_Rei")
+    conn = get_db_connection(os.getenv('DB_DISCORD_NAME'))
     cursor = conn.cursor()
 
     try:
@@ -25,7 +26,7 @@ def toggle_logs(guild_id, activated_logs):
         conn.close()
 
 def get_current_logs_value(guild_id):
-    conn = get_db_connection("AbbyBot_Rei")
+    conn = get_db_connection(os.getenv('DB_DISCORD_NAME'))
     cursor = conn.cursor()
     
     try:

@@ -1,7 +1,8 @@
+import os
 from ..utils.db import get_db_connection
 
 def set_logs_channel(guild_id, logs_channel):
-    conn = get_db_connection("AbbyBot_Rei")
+    conn = get_db_connection(os.getenv('DB_DISCORD_NAME'))
     cursor = conn.cursor()
 
     try:
@@ -24,7 +25,7 @@ def set_logs_channel(guild_id, logs_channel):
         conn.close()
 
 def get_current_logs_channel(guild_id):
-    conn = get_db_connection("AbbyBot_Rei")
+    conn = get_db_connection(os.getenv('DB_DISCORD_NAME'))
     cursor = conn.cursor()
     
     try:

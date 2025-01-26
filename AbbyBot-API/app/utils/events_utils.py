@@ -1,7 +1,8 @@
+import os
 from ..utils.db import get_db_connection
 
 def get_current_event_value(guild_id):
-    conn = get_db_connection("AbbyBot_Rei")
+    conn = get_db_connection(os.getenv('DB_DISCORD_NAME'))
     cursor = conn.cursor()
     
     try:
@@ -15,7 +16,7 @@ def get_current_event_value(guild_id):
 
 
 def toggle_events(guild_id, activated_events):
-    conn = get_db_connection("AbbyBot_Rei")
+    conn = get_db_connection(os.getenv('DB_DISCORD_NAME'))
     cursor = conn.cursor()
 
     try:

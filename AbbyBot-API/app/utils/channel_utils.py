@@ -1,9 +1,10 @@
+import os
 from ..utils.db import get_db_connection
 
 # Join channel
 
 def get_current_join_channel(guild_id):
-    conn = get_db_connection("AbbyBot_Rei")
+    conn = get_db_connection(os.getenv('DB_DISCORD_NAME'))
     cursor = conn.cursor()
 
     try:
@@ -18,7 +19,7 @@ def get_current_join_channel(guild_id):
         conn.close()
 
 def update_join_channel(guild_id, join_channel_id):
-    conn = get_db_connection("AbbyBot_Rei")
+    conn = get_db_connection(os.getenv('DB_DISCORD_NAME'))
     cursor = conn.cursor()
 
     try:
@@ -34,7 +35,7 @@ def update_join_channel(guild_id, join_channel_id):
         cursor.close()
         conn.close()
 def set_join_channel_id(guild_id, join_channel_id):
-    conn = get_db_connection("AbbyBot_Rei")
+    conn = get_db_connection(os.getenv('DB_DISCORD_NAME'))
     cursor = conn.cursor()
 
     try:
@@ -57,7 +58,7 @@ def set_join_channel_id(guild_id, join_channel_id):
 # Kick channel
 
 def get_current_kick_channel(guild_id):
-    conn = get_db_connection("AbbyBot_Rei")
+    conn = get_db_connection(os.getenv('DB_DISCORD_NAME'))
     cursor = conn.cursor()
 
     try:
@@ -72,7 +73,7 @@ def get_current_kick_channel(guild_id):
         conn.close()
 
 def update_kick_channel(guild_id, kick_channel_id):
-    conn = get_db_connection("AbbyBot_Rei")
+    conn = get_db_connection(os.getenv('DB_DISCORD_NAME'))
     cursor = conn.cursor()
 
     try:
@@ -89,7 +90,7 @@ def update_kick_channel(guild_id, kick_channel_id):
         conn.close()
 
 def set_kick_channel_id(guild_id, kick_channel_id):
-    conn = get_db_connection("AbbyBot_Rei")
+    conn = get_db_connection(os.getenv('DB_DISCORD_NAME'))
     cursor = conn.cursor()
 
     try:
@@ -113,7 +114,7 @@ def set_kick_channel_id(guild_id, kick_channel_id):
 # Ban channel
 
 def get_current_ban_channel(guild_id):
-    conn = get_db_connection("AbbyBot_Rei")
+    conn = get_db_connection(os.getenv('DB_DISCORD_NAME'))
     cursor = conn.cursor()
 
     try:
@@ -128,7 +129,7 @@ def get_current_ban_channel(guild_id):
         conn.close()
 
 def update_ban_channel(guild_id, ban_channel_id):
-    conn = get_db_connection("AbbyBot_Rei")
+    conn = get_db_connection(os.getenv('DB_DISCORD_NAME'))
     cursor = conn.cursor()
 
     try:
@@ -145,7 +146,7 @@ def update_ban_channel(guild_id, ban_channel_id):
         conn.close()
 
 def set_ban_channel_id(guild_id, ban_channel_id):
-    conn = get_db_connection("AbbyBot_Rei")
+    conn = get_db_connection(os.getenv('DB_DISCORD_NAME'))
     cursor = conn.cursor()
 
     try:
