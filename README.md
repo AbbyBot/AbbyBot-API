@@ -28,14 +28,16 @@ pip install -r requirements.txt
 To configure the API, you need a `.env` file with the following variables:
 
 ```
-DISCORD_TOKEN=your_discord_token
-DB_HOST=your_database_host
-DB_USER=your_database_user
-DB_PASSWORD=your_database_password
-DISCORD_API_BASE_URL=https://discord.com/api/v10
-IMAGE_FOLDER_PATH=path_to_your_image_folder
-BOT_VERSION=your_bot_version
+DB_HOST=example.com
+DB_USER=example_user
+DB_PASSWORD=example_password
+IMAGE_FOLDER_PATH=/path/to/static_images
+BOT_VERSION=1.0.0
+DB_DISCORD_NAME=example_discord_db
+DB_API_NAME=example_api_db
+DB_WISHLIST_NAME=example_wishlist_db
 ```
+>Note: The system is designed for the database user (DB_USER) to use only one host (DB_HOST) and must have the necessary read and write permissions for all databases (DB_DISCORD_NAME, DB_API_NAME, DB_WISHLIST_NAME). Therefore, everything should be unified.
 
 ## Running the API
 
