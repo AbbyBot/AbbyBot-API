@@ -1,11 +1,12 @@
 from flask import Blueprint, jsonify, request
+import os
 from ..utils.db import get_db_connection, get_server_count
 
 bot_info_bp = Blueprint('bot_info', __name__)
 
 @bot_info_bp.route('/bot-info', methods=['GET', 'POST'])
 def bot_info():
-    conn = get_db_connection("AbbyBot_Asuka")
+    conn = get_db_connection(os.getenv('DB_API_NAME'))
     cursor = conn.cursor(dictionary=True)
     
     if request.method == 'GET':
