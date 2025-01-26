@@ -27,7 +27,6 @@ def bot_info():
                 "banner_url": bot_info["banner_url"],
                 "server_count": server_count,
                 "version": bot_info["version"],
-                "version_code": bot_info["version_code"],
                 "status": bot_info.get("status", "unknown")
             })
         else:
