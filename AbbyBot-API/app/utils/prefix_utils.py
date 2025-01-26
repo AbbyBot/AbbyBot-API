@@ -1,7 +1,8 @@
 from ..utils.db import get_db_connection
+import os
 
 def set_prefix(guild_id, prefix):
-    conn = get_db_connection("AbbyBot_Rei")
+    conn = get_db_connection(os.getenv('DB_DISCORD_NAME'))
     cursor = conn.cursor()
 
     try:
@@ -25,7 +26,7 @@ def set_prefix(guild_id, prefix):
         conn.close()
 
 def get_current_prefix(guild_id):
-    conn = get_db_connection("AbbyBot_Rei")
+    conn = get_db_connection(os.getenv('DB_DISCORD_NAME'))
     cursor = conn.cursor()
     
     try:
