@@ -1,7 +1,8 @@
 from ..utils.db import get_db_connection
+import os
 
 def get_current_theme(user_id):
-    conn = get_db_connection("AbbyBot_Rei")
+    conn = get_db_connection(os.getenv('DB_DISCORD_NAME'))
     cursor = conn.cursor()
     
     try:
@@ -14,7 +15,7 @@ def get_current_theme(user_id):
         conn.close()
 
 def theme_exists(theme_id):
-    conn = get_db_connection("AbbyBot_Rei")
+    conn = get_db_connection(os.getenv('DB_DISCORD_NAME'))
     cursor = conn.cursor()
     
     try:
@@ -27,7 +28,7 @@ def theme_exists(theme_id):
         conn.close()
 
 def update_abbybot_theme(user_id, theme_id):
-    conn = get_db_connection("AbbyBot_Rei")
+    conn = get_db_connection(os.getenv('DB_DISCORD_NAME'))
     cursor = conn.cursor()
 
     try:
@@ -48,7 +49,7 @@ def update_abbybot_theme(user_id, theme_id):
         conn.close()
 
 def get_themes_data():
-    conn = get_db_connection("AbbyBot_Rei")  
+    conn = get_db_connection(os.getenv('DB_DISCORD_NAME'))  
     cursor = conn.cursor(dictionary=True)
     query = """
     SELECT

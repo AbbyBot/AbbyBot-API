@@ -28,14 +28,16 @@ pip install -r requirements.txt
 To configure the API, you need a `.env` file with the following variables:
 
 ```
-DISCORD_TOKEN=your_discord_token
-DB_HOST=your_database_host
-DB_USER=your_database_user
-DB_PASSWORD=your_database_password
-DISCORD_API_BASE_URL=https://discord.com/api/v10
-IMAGE_FOLDER_PATH=path_to_your_image_folder
-BOT_VERSION=your_bot_version
+DB_HOST=example.com
+DB_USER=example_user
+DB_PASSWORD=example_password
+IMAGE_FOLDER_PATH=/path/to/static_images
+BOT_VERSION=1.0.0
+DB_DISCORD_NAME=example_discord_db
+DB_API_NAME=example_api_db
+DB_WISHLIST_NAME=example_wishlist_db
 ```
+>Note: The system is designed for the database user (DB_USER) to use only one host (DB_HOST) and must have the necessary read and write permissions for all databases (DB_DISCORD_NAME, DB_API_NAME, DB_WISHLIST_NAME). Therefore, everything should be unified.
 
 ## Running the API
 
@@ -1252,4 +1254,50 @@ Return a list of AbbyBot info, like users count, xp, servers.
     }
 ]
 ```
+
+
+### 26. Get Server info
+
+**URL** `/server-info?guild_id`
+**Method:** `GET`  
+**Parameters:**
+- `guild_id`: Discord guild ID (required)
+
+Return the guild info and values of settings, like assigned channels, language, prefix, etc.
+
+#### Example Response:
+```json
+```json
+[
+  {
+    "activated_ban_channel": 1,
+    "activated_birthday": 1,
+    "activated_events": 0,
+    "activated_join_channel": 1,
+    "activated_kick_channel": 0,
+    "activated_logs": 1,
+    "ban_channel_id": 123456789012345678,
+    "birthday_channel": 987654321098765432,
+    "default_bot_role_id": null,
+    "default_role_id": 234567890123456789,
+    "guild_icon_url": "https://cdn.discordapp.com/icons/123456789012345678/abcdef1234567890abcdef1234567890.png?size=1024",
+    "guild_id": 123456789012345678,
+    "guild_language": "Spanish",
+    "guild_name": "Random Guild",
+    "join_channel_id": 345678901234567890,
+    "kick_channel_id": null,
+    "logs_channel": 456789012345678901,
+    "member_count": 100,
+    "owner_username": "randomuser",
+    "prefix": "random_"
+  }
+]
+```
+
+
+
+
+
+
+
 >Note: The bot information is periodically updated in the local database, but real-time data is fetched from the Discord API.

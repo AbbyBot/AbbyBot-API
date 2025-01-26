@@ -1,7 +1,8 @@
+import os
 from ..utils.db import get_db_connection
 
 def get_all_server_stats():
-    conn = get_db_connection("AbbyBot_Rei")
+    conn = get_db_connection(os.getenv('DB_DISCORD_NAME'))
     cursor = conn.cursor()
 
     try:
@@ -28,7 +29,7 @@ def get_all_server_stats():
 
 
 def get_all_privileges():
-    conn = get_db_connection("AbbyBot_Rei")
+    conn = get_db_connection(os.getenv('DB_DISCORD_NAME'))
     cursor = conn.cursor()
 
     try:

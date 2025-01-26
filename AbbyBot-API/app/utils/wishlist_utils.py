@@ -1,5 +1,6 @@
 from ..utils.db import get_db_connection
 import re  # Import the regular expression library
+import os  # Import the os library to access environment variables
 
 def add_wishlist(name, email, discord_username, reason=None, how_learned=None):
     # Normalize data before insert
@@ -14,7 +15,7 @@ def add_wishlist(name, email, discord_username, reason=None, how_learned=None):
     how_learned = how_learned.capitalize() if how_learned else "Not Provided"
 
     # Database connection
-    conn = get_db_connection("AbbyBot_Asuka")
+    conn = get_db_connection(os.getenv("DB_WISHLIST_NAME"))
     cursor = conn.cursor(dictionary=True)
 
     # Check if the discord_username already exists in the wishlist

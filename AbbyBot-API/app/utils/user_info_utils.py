@@ -1,7 +1,8 @@
 from ..utils.db import get_db_connection
+import os
 
 def get_user_info(user_id):
-    conn = get_db_connection("AbbyBot_Rei")  
+    conn = get_db_connection(os.getenv('DB_DISCORD_NAME'))  
     cursor = conn.cursor(dictionary=True)
     query = """
     SELECT 

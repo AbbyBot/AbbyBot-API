@@ -1,7 +1,8 @@
+import os
 from ..utils.db import get_db_connection
 
 def get_current_birthday(user_id):
-    conn = get_db_connection("AbbyBot_Rei")
+    conn = get_db_connection(os.getenv('DB_DISCORD_NAME'))
     cursor = conn.cursor()
 
     try:
@@ -16,7 +17,7 @@ def get_current_birthday(user_id):
 
 
 def update_user_birthday(user_id, birthday_date):
-    conn = get_db_connection("AbbyBot_Rei")
+    conn = get_db_connection(os.getenv('DB_DISCORD_NAME'))
     cursor = conn.cursor()
 
     try:
@@ -35,7 +36,7 @@ def update_user_birthday(user_id, birthday_date):
 
 
 def toggle_birthday(guild_id, activated_birthday):
-    conn = get_db_connection("AbbyBot_Rei")
+    conn = get_db_connection(os.getenv('DB_DISCORD_NAME'))
     cursor = conn.cursor()
 
     try:
@@ -59,7 +60,7 @@ def toggle_birthday(guild_id, activated_birthday):
         conn.close()
 
 def get_current_toggle_birthday(guild_id):
-    conn = get_db_connection("AbbyBot_Rei")
+    conn = get_db_connection(os.getenv('DB_DISCORD_NAME'))
     cursor = conn.cursor()
     
     try:
@@ -72,7 +73,7 @@ def get_current_toggle_birthday(guild_id):
         conn.close()
 
 def set_birthday_channel(guild_id, birthday_channel):
-    conn = get_db_connection("AbbyBot_Rei")
+    conn = get_db_connection(os.getenv('DB_DISCORD_NAME'))
     cursor = conn.cursor()
 
     try:
@@ -95,7 +96,7 @@ def set_birthday_channel(guild_id, birthday_channel):
         conn.close()
 
 def get_current_birthday_channel(guild_id):
-    conn = get_db_connection("AbbyBot_Rei")
+    conn = get_db_connection(os.getenv('DB_DISCORD_NAME'))
     cursor = conn.cursor()
     
     try:

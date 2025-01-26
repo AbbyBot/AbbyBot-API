@@ -10,7 +10,7 @@ def get_db_connection(database):
     )
 
 def get_server_count():
-    conn = get_db_connection("AbbyBot_Rei")  
+    conn = get_db_connection(os.getenv('DB_DISCORD_NAME'))  
     cursor = conn.cursor()
     cursor.execute("SELECT COUNT(DISTINCT guild_id) FROM dashboard;")
     count = cursor.fetchone()[0]
@@ -19,7 +19,7 @@ def get_server_count():
     return count
 
 def get_user_server_data(user_id):
-    conn = get_db_connection("AbbyBot_Rei")  
+    conn = get_db_connection(os.getenv('DB_DISCORD_NAME'))  
     cursor = conn.cursor(dictionary=True)
 
     query = """
