@@ -1,4 +1,5 @@
 from flask import Blueprint, jsonify, request
+from flasgger import swag_from
 from ..utils.channel_utils import (
     get_current_join_channel, set_join_channel_id,
     get_current_kick_channel, set_kick_channel_id,
@@ -10,6 +11,38 @@ update_channel_bd = Blueprint('update_channel', __name__)
 # Join channel    
 
 @update_channel_bd.route('/update-join-channel', methods=['POST'])
+@swag_from({
+    'tags': ['AbbyBot Servers'],
+    'parameters': [
+        {
+            'name': 'body',
+            'in': 'body',
+            'required': True,
+            'schema': {
+                'type': 'object',
+                'properties': {
+                    'guild_id': {'type': 'integer'},
+                    'join_channel_id': {'type': 'integer'}
+                },
+                'required': ['guild_id']
+            }
+        }
+    ],
+    'responses': {
+        '200': {
+            'description': 'Join channel updated successfully'
+        },
+        '400': {
+            'description': 'Invalid input or missing guild_id'
+        },
+        '404': {
+            'description': 'No guild found with the provided guild_id'
+        },
+        '500': {
+            'description': 'Failed to update the join channel'
+        }
+    }
+})
 def update_join_channel_endpoint():
     guild_id = request.json.get('guild_id')
     join_channel_id = request.json.get('join_channel_id')
@@ -41,6 +74,38 @@ def update_join_channel_endpoint():
 # Kick channel    
 
 @update_channel_bd.route('/update-kick-channel', methods=['POST'])
+@swag_from({
+    'tags': ['AbbyBot Servers'],
+    'parameters': [
+        {
+            'name': 'body',
+            'in': 'body',
+            'required': True,
+            'schema': {
+                'type': 'object',
+                'properties': {
+                    'guild_id': {'type': 'integer'},
+                    'kick_channel_id': {'type': 'integer'}
+                },
+                'required': ['guild_id']
+            }
+        }
+    ],
+    'responses': {
+        '200': {
+            'description': 'Kick channel updated successfully'
+        },
+        '400': {
+            'description': 'Invalid input or missing guild_id'
+        },
+        '404': {
+            'description': 'No guild found with the provided guild_id'
+        },
+        '500': {
+            'description': 'Failed to update the kick channel'
+        }
+    }
+})
 def update_kick_channel_endpoint():
     guild_id = request.json.get('guild_id')
     kick_channel_id = request.json.get('kick_channel_id')
@@ -73,6 +138,38 @@ def update_kick_channel_endpoint():
 # Ban channel
 
 @update_channel_bd.route('/update-ban-channel', methods=['POST'])
+@swag_from({
+    'tags': ['AbbyBot Servers'],
+    'parameters': [
+        {
+            'name': 'body',
+            'in': 'body',
+            'required': True,
+            'schema': {
+                'type': 'object',
+                'properties': {
+                    'guild_id': {'type': 'integer'},
+                    'ban_channel_id': {'type': 'integer'}
+                },
+                'required': ['guild_id']
+            }
+        }
+    ],
+    'responses': {
+        '200': {
+            'description': 'Ban channel updated successfully'
+        },
+        '400': {
+            'description': 'Invalid input or missing guild_id'
+        },
+        '404': {
+            'description': 'No guild found with the provided guild_id'
+        },
+        '500': {
+            'description': 'Failed to update the ban channel'
+        }
+    }
+})
 def update_ban_channel_endpoint():
     guild_id = request.json.get('guild_id')
     ban_channel_id = request.json.get('ban_channel_id')
