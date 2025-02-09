@@ -17,3 +17,11 @@ def forbidden_error(error):
 @view_handler_bp.app_errorhandler(500)
 def internal_error(error):
     return render_template('500.html'), 500
+
+@view_handler_bp.app_errorhandler(405)
+def method_not_allowed_error(error):
+    return render_template('405.html'), 405
+
+@view_handler_bp.app_errorhandler(415)
+def unsupported_media_type_error(error):
+    return render_template('415.html'), 415
