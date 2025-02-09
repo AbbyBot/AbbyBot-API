@@ -4,20 +4,21 @@
 This API is an integral component of the AbbyBot project, providing comprehensive data services related to Discord bot servers, users, and bot-specific information.
 
 <div align="center">
-  <img src="https://img.shields.io/badge/Python-3.10.0+-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python">
-  <img src="https://img.shields.io/badge/MySQL-v8.0-3776AB?style=flat-square&logo=mysql&logoColor=white" alt="MySQL">
-  <img src="https://img.shields.io/badge/Flask-v2.1-3776AB?style=flat-square&logo=flask&logoColor=white" alt="Flask">
-  <img src="https://img.shields.io/badge/Docker-dockerfile-3776AB?style=flat-square&logo=docker&logoColor=white" alt="Docker">
+  <img src="https://img.shields.io/badge/Python-3.10.0+-4caf50?style=flat-square&logo=python&logoColor=white" alt="Python">
+  <img src="https://img.shields.io/badge/MySQL-v8.0-ffeb3b?style=flat-square&logo=mysql&logoColor=white" alt="MySQL">
+  <img src="https://img.shields.io/badge/Flask-v2.1-2196f3?style=flat-square&logo=flask&logoColor=white" alt="Flask">
+  <img src="https://img.shields.io/badge/Docker-dockerfile-4caf50?style=flat-square&logo=docker&logoColor=white" alt="Docker">
+  
 </div>
 
 
 
 ## Requirements
-- ![Python](https://img.shields.io/badge/Python-3.10.0+-3776AB?style=flat-square&logo=python&logoColor=white) Python 3.10.0 or later
-- ![Flask](https://img.shields.io/badge/Flask-2.1-3776AB?style=flat-square&logo=flask&logoColor=white) Flask
-- ![MySQL](https://img.shields.io/badge/MySQL-8.0-3776AB?style=flat-square&logo=mysql&logoColor=white) MySQL connector
-- ![dotenv](https://img.shields.io/badge/dotenv-5.0-3776AB?style=flat-square&logo=dotenv&logoColor=white) dotenv
-- ![requests](https://img.shields.io/badge/requests-2.26.0-3776AB?style=flat-square&logo=python&logoColor=white) requests
+- ![Python](https://img.shields.io/badge/Python-3.10.0+-4caf50?style=flat-square&logo=python&logoColor=white) Python 3.10.0 or later
+- ![Flask](https://img.shields.io/badge/Flask-2.1-2196f3?style=flat-square&logo=flask&logoColor=white) Flask
+- ![MySQL](https://img.shields.io/badge/MySQL-8.0-ffeb3b?style=flat-square&logo=mysql&logoColor=white) MySQL connector
+- ![dotenv](https://img.shields.io/badge/dotenv-5.0-4caf50?style=flat-square&logo=dotenv&logoColor=white) dotenv
+- ![requests](https://img.shields.io/badge/requests-2.26.0-2196f3?style=flat-square&logo=python&logoColor=white) requests
 
 Make sure you have all the necessary packages installed by running:
 ```
@@ -55,9 +56,6 @@ python main.py
   ## Endpoints list
 
   <a href="https://api.abbybotproject.com/docs">
-    <img src="https://img.shields.io/badge/View%20Endpoints-API%20Docs-3776AB?style=flat-square&logo=read-the-docs&logoColor=white" alt="View Endpoints">
+    <img src="https://img.shields.io/badge/View%20Endpoints-API%20Docs-4caf50?style=flat-square&logo=read-the-docs&logoColor=white" alt="View Endpoints">
   </a>
 </div>
-
-
-
