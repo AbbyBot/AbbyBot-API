@@ -32,7 +32,6 @@ def create_app():
     from .routes.update_channels import update_channel_bd
     from .routes.add_wishlist_user import add_wishlist_bp
     from .routes.api_status import status_bp
-    from .routes.news_list import news_list_bp
     from .routes.abbybot_commands import abbybot_commands_bp
     from .routes.abbybot_server_stats import abbybot_server_stats_bp
     from .routes.server_info import server_info_bp
