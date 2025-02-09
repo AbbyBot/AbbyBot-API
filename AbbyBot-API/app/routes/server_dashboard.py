@@ -1,9 +1,66 @@
 from flask import Blueprint, request, jsonify
-from ..utils.db import get_db_connection
+from flasgger import swag_from
+from ..utils.server_dashboard_utils import fetch_server_dashboard
 
 server_dashboard_bp = Blueprint('server_dashboard', __name__)
 
 @server_dashboard_bp.route('/server-dashboard', methods=['GET'])
+@swag_from({
+    'tags': ['AbbyBot Servers'],
+    'parameters': [
+        {
+            'name': 'guild_id',
+            'in': 'query',
+            'type': 'string',
+            'required': True,
+            'description': 'The ID of the guild'
+        },
+        {
+            'name': 'page',
+            'in': 'query',
+            'type': 'integer',
+            'required': False,
+            'default': 1,
+            'description': 'The page number to fetch'
+        }
+    ],
+    'responses': {
+        '200': {
+            'description': 'A list of users in the server dashboard',
+            'schema': {
+                'type': 'object',
+                'properties': {
+                    'users': {
+                        'type': 'array',
+                        'items': {
+                            'type': 'object',
+                            'properties': {
+                                'username': {'type': 'string'},
+                                'nickname_in_server': {'type': 'string'},
+                                'user_type': {'type': 'string'},
+                                'user_id': {'type': 'string'},
+                                'server_roles': {
+                                    'type': 'array',
+                                    'items': {'type': 'string'}
+                                },
+                                'birthday_date': {'type': 'string', 'format': 'date'}
+                            }
+                        }
+                    },
+                    'total_users': {'type': 'integer'},
+                    'page_users': {'type': 'integer'},
+                    'page': {'type': 'integer'}
+                }
+            }
+        },
+        '400': {
+            'description': 'Missing required parameter: guild_id'
+        },
+        '404': {
+            'description': 'guild_id not found. please provide a valid guild_id.'
+        }
+    }
+})
 def get_server_dashboard():
     guild_id = request.args.get('guild_id')
     page = request.args.get('page', 1)
@@ -11,81 +68,9 @@ def get_server_dashboard():
 
     if not guild_id:
         return jsonify({'error': 'Missing required parameter: guild_id'}), 400
-    
 
+    response_object = fetch_server_dashboard(guild_id, page, limit)
+    if 'error' in response_object:
+        return jsonify(response_object), 404
 
-    conn = get_db_connection("AbbyBot_Rei")
-    
-    try:
-        with conn.cursor() as cursor:
-            query = """
-                    SELECT 
-                        up.user_username AS 'Username',
-                        d.user_server_nickname AS 'Nickname in server',
-                        CASE 
-                            WHEN ss.owner_id = up.user_id THEN 'Owner'
-                            WHEN d.is_bot = 1 THEN 'BOT'
-                            WHEN d.is_admin = 1 THEN 'Admin'
-                            ELSE 'User'
-                        END AS 'User type',
-                        CAST(up.user_id AS CHAR) AS 'User ID',
-                        ur.role_name AS 'Server roles',
-                        up.user_birthday AS 'Birthday Date'  
-                    FROM 
-                        dashboard d
-                    JOIN 
-                        user_profile up ON d.user_profile_id = up.id
-                    LEFT JOIN 
-                        user_roles ur ON ur.user_profile_id = up.id AND ur.guild_id = d.guild_id
-                    JOIN 
-                        server_settings ss ON ss.guild_id = d.guild_id
-                    WHERE 
-                        d.guild_id = %s
-                    ORDER BY 
-                        up.user_username, ur.role_name
-            """
-            count_query = "SELECT member_count from server_settings WHERE guild_id = %s"
-            page = int(page)
-
-            # Fetching user data
-            cursor.execute(query, (guild_id,))
-            user_data = cursor.fetchall()
-
-            dashboard = {}
-            for row in user_data:
-                user_id = row[3]
-                birthday_date = row[5]
-                if birthday_date:
-                    birthday_date = birthday_date.strftime('%Y-%m-%d')
-                else:
-                    birthday_date = None
-                
-                if user_id not in dashboard:
-                    dashboard[user_id] = {
-                        'username': row[0],
-                        'nickname_in_server': row[1],
-                        'user_type': row[2],
-                        'user_id': row[3],
-                        'server_roles': [],
-                        'birthday_date': birthday_date
-                    }
-                if row[4]:
-                    dashboard[user_id]['server_roles'].append(row[4])
-            users = list(dashboard.values())[(page-1)*limit:page*limit]
-
-
-            # Fetching total members count
-            cursor.execute(count_query, (guild_id,))
-            total_members = cursor.fetchone()
-            
-            response_object = {
-                'users': users,
-                'total_users': total_members[0],
-                'page_users': len(users),
-                'page': page
-            }
-            return jsonify(response_object), 200
-    except:
-        return jsonify({'users': [], 'total_users': 0}), 200
-    finally:
-        conn.close()
+    return jsonify(response_object), 200

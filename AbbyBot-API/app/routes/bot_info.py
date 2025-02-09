@@ -1,35 +1,61 @@
 from flask import Blueprint, jsonify, request
 import os
-from ..utils.db import get_db_connection, get_server_count
+from flasgger import swag_from
+from ..utils.bot_info_utils import get_bot_info, update_bot_status
 
 bot_info_bp = Blueprint('bot_info', __name__)
 
 @bot_info_bp.route('/bot-info', methods=['GET', 'POST'])
+@swag_from({
+    'tags': ['Health'],
+    'responses': {
+        200: {
+            'description': 'Bot information retrieved successfully',
+            'examples': {
+                'application/json': {
+                    "bot_id": "123456789",
+                    "bot_name": "AbbyBot",
+                    "discriminator": "0001",
+                    "avatar_url": "http://example.com/avatar.png",
+                    "banner_url": "http://example.com/banner.png",
+                    "server_count": 10,
+                    "version": "1.0.0",
+                    "status": "online"
+                }
+            }
+        },
+        404: {
+            'description': 'No bot information found',
+            'examples': {
+                'application/json': {
+                    "error": "No bot information found"
+                }
+            }
+        },
+        400: {
+            'description': 'Invalid status value',
+            'examples': {
+                'application/json': {
+                    "error": "Invalid status value"
+                }
+            }
+        },
+        500: {
+            'description': 'Internal server error',
+            'examples': {
+                'application/json': {
+                    "error": "Internal server error"
+                }
+            }
+        }
+    }
+})
+
 def bot_info():
-    conn = get_db_connection(os.getenv('DB_API_NAME'))
-    cursor = conn.cursor(dictionary=True)
-    
     if request.method == 'GET':
-        query = "SELECT * FROM bot_info LIMIT 1"
-        cursor.execute(query)
-        bot_info = cursor.fetchone()
-
-        cursor.close()
-        conn.close()
-
+        bot_info = get_bot_info()
         if bot_info:
-            server_count = get_server_count()
-            return jsonify({
-                "bot_id": str(bot_info["bot_id"]),
-                "bot_name": bot_info["bot_name"],
-                "discriminator": bot_info["discriminator"],
-                "avatar_url": bot_info["avatar_url"],
-                "banner_url": bot_info["banner_url"],
-                "server_count": server_count,
-                "version": bot_info["version"],
-                "version_code": bot_info["version_code"],
-                "status": bot_info.get("status", "unknown")
-            })
+            return jsonify(bot_info)
         else:
             return jsonify({"error": "No bot information found"}), 404
 
@@ -41,26 +67,9 @@ def bot_info():
             if bot_status not in ["online", "offline"]:
                 return jsonify({"error": "Invalid status value"}), 400
 
-            cursor.execute("SELECT bot_id FROM bot_info LIMIT 1")
-            bot_info = cursor.fetchone()
-
-            if bot_info:
-                bot_id = str(bot_info["bot_id"])
-                update_query = """
-                    UPDATE bot_info 
-                    SET status = %s 
-                    WHERE bot_id = %s
-                """
-                cursor.execute(update_query, (bot_status, bot_id))
-                conn.commit()
-
-                cursor.close()
-                conn.close()
-
+            if update_bot_status(bot_status):
                 return jsonify({"message": f"Bot status updated to {bot_status}"}), 200
             else:
                 return jsonify({"error": "No bot information found"}), 404
         except Exception as e:
-            cursor.close()
-            conn.close()
             return jsonify({"error": str(e)}), 500

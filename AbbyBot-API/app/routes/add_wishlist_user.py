@@ -1,9 +1,70 @@
 from flask import Blueprint, request, jsonify
 from ..utils.wishlist_utils import add_wishlist
+from flasgger import swag_from
 
 add_wishlist_bp = Blueprint('add_wishlist', __name__)
 
 @add_wishlist_bp.route('/add-wishlist', methods=['POST'])
+@swag_from({
+    'tags': ['AbbyBotProject Website'],
+    'parameters': [
+        {
+            'name': 'body',
+            'in': 'body',
+            'required': True,
+            'schema': {
+                'type': 'object',
+                'properties': {
+                    'name': {'type': 'string'},
+                    'email': {'type': 'string'},
+                    'discord_username': {'type': 'string'},
+                    'reason': {'type': 'string', 'nullable': True},
+                    'how_learned': {'type': 'string', 'nullable': True}
+                },
+                'required': ['name', 'email', 'discord_username'],
+                'example': {
+                    'name': 'John Doe',
+                    'email': 'john.doe@example.com',
+                    'discord_username': 'johndoe#1234',
+                    'reason': 'I love this bot!',
+                    'how_learned': 'Through a friend'
+                }
+            }
+        }
+    ],
+    'responses': {
+        '201': {
+            'description': 'Wishlist item added successfully',
+            'schema': {
+                'type': 'object',
+                'properties': {
+                    'message': {'type': 'string'},
+                    'status_code': {'type': 'integer'}
+                }
+            }
+        },
+        '400': {
+            'description': 'Invalid input or missing required fields',
+            'schema': {
+                'type': 'object',
+                'properties': {
+                    'error': {'type': 'string'},
+                    'status_code': {'type': 'integer'}
+                }
+            }
+        },
+        '500': {
+            'description': 'Internal server error',
+            'schema': {
+                'type': 'object',
+                'properties': {
+                    'error': {'type': 'string'},
+                    'status_code': {'type': 'integer'}
+                }
+            }
+        }
+    }
+})
 def handle_add_wishlist():
     data = request.get_json()
     if not data:
