@@ -1,7 +1,8 @@
 from ..utils.db import get_db_connection
+import os
 
 def get_current_language(guild_id):
-    conn = get_db_connection("AbbyBot_Rei")
+    conn = get_db_connection(os.getenv('DB_DISCORD_NAME'))
     cursor = conn.cursor()
     try:
         query = "SELECT guild_language FROM server_settings WHERE guild_id = %s;"
@@ -13,7 +14,7 @@ def get_current_language(guild_id):
         conn.close()
 
 def update_language(guild_id, guild_language):
-    conn = get_db_connection("AbbyBot_Rei")
+    conn = get_db_connection(os.getenv('DB_DISCORD_NAME'))
     cursor = conn.cursor()
 
     try:

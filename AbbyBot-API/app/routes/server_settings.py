@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from ..utils.server_settings_utils import get_current_language, update_language
+from ..utils.server_settings_utils import update_language
 
 server_settings_bp = Blueprint('server_settings', __name__)
 
