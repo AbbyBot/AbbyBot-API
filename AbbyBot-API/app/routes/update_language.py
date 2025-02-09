@@ -1,10 +1,58 @@
 from flask import Blueprint, jsonify, request
+from flasgger import swag_from
 from ..utils.language_utils import update_language
 
 update_language_bp = Blueprint('update_language', __name__)
 
-
 @update_language_bp.route('/update-language', methods=['POST'])
+@swag_from({
+    'tags': ['AbbyBot Servers'],
+    'parameters': [
+        {
+            'name': 'body',
+            'in': 'body',
+            'required': True,
+            'schema': {
+                'type': 'object',
+                'properties': {
+                    'guild_id': {
+                        'type': 'string',
+                        'description': 'The ID of the guild'
+                    },
+                    'language_id': {
+                        'type': 'string',
+                        'description': 'The new language ID to set for the guild'
+                    }
+                },
+                'required': ['guild_id', 'language_id']
+            }
+        }
+    ],
+    'responses': {
+        200: {
+            'description': 'Language updated successfully or no update needed',
+            'examples': {
+                'application/json': {
+                    'info': 'No update needed, the language is already set',
+                    'status_code': 200
+                },
+                'application/json': {
+                    'success': 'Language updated for guild {guild_id}',
+                    'status_code': 200
+                }
+            }
+        },
+        404: {
+            'description': 'No guild found with the provided guild_id',
+            'examples': {
+                'application/json': {
+                    'error': 'No guild found with the provided guild_id',
+                    'status_code': 404
+                }
+            }
+        }
+    }
+})
 def update_guild_language_route():
 
     guild_id = request.json.get('guild_id')
