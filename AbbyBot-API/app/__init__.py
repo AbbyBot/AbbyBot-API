@@ -15,7 +15,6 @@ def create_app():
     from .routes.bot_info import bot_info_bp
     from .routes.user_info import user_info_bp
     from .routes.server_settings import server_settings_bp
-    from .routes.photos import photos_bp
     from .routes.server_dashboard import server_dashboard_bp  
     from .routes.user_servers import user_servers_bp
     from .routes.update_birthday import update_birthday_bd
@@ -41,7 +40,6 @@ def create_app():
     app.register_blueprint(bot_info_bp)
     app.register_blueprint(user_info_bp)
     app.register_blueprint(server_settings_bp)
-    app.register_blueprint(photos_bp)
     app.register_blueprint(server_dashboard_bp)
     app.register_blueprint(user_servers_bp)
     app.register_blueprint(update_birthday_bd)
@@ -59,7 +57,6 @@ def create_app():
     app.register_blueprint(update_channel_bd)
     app.register_blueprint(add_wishlist_bp)
     app.register_blueprint(status_bp)
-    app.register_blueprint(news_list_bp)
     app.register_blueprint(abbybot_commands_bp)
     app.register_blueprint(abbybot_server_stats_bp)
     app.register_blueprint(server_info_bp)
