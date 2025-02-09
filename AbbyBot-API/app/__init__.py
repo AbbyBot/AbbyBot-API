@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 from flask_cors import CORS
 from dotenv import load_dotenv
 from flasgger import Swagger
@@ -29,6 +29,10 @@ def create_app():
     }
 
     Swagger(app, config=swagger_config)
+
+    @app.route('/')
+    def index():
+        return render_template('index.html')
 
     from .routes.bot_info import bot_info_bp
     from .routes.user_info import user_info_bp
