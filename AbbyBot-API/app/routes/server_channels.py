@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from ..utils.db import get_db_connection
+from ..utils.server_channels_utils import fetch_server_channels, NoChannelsFoundError
 
 server_channels_bp = Blueprint('server_channels', __name__)
 
@@ -10,32 +11,12 @@ def get_server_dashboard():
     if not guild_id:
         return jsonify({'error': 'Missing required parameter: guild_id'}), 400
     
-    conn = get_db_connection("AbbyBot_Rei")
+    if not guild_id.isdigit():
+        return jsonify({'error': 'Invalid guild_id format'}), 400
     
     try:
-        with conn.cursor() as cursor:
-            query = """
-                    SELECT
-                      id, guild_id, channel_id, channel_title 
-                    FROM
-                      server_channels 
-                    WHERE
-                      guild_id = %s;
-                    """
-            cursor.execute(query, (guild_id,))
-            result = cursor.fetchall()
-
-            channel_list = []
-            for row in result:
-                channel_data = {
-                    'id': row[0],
-                    'guild_id': str(row[1]),
-                    'channel_id': str(row[2]),
-                    'channel_title': row[3]
-                }
-                channel_list.append(channel_data)
-
-            return jsonify(channel_list)
-
-    finally:
-        conn.close()
+        channel_list = fetch_server_channels(guild_id)
+    except NoChannelsFoundError as e:
+        return jsonify({'error': str(e)}), 404
+    
+    return jsonify(channel_list)
