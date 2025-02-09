@@ -6,7 +6,7 @@ add_wishlist_bp = Blueprint('add_wishlist', __name__)
 
 @add_wishlist_bp.route('/add-wishlist', methods=['POST'])
 @swag_from({
-    'tags': ['Wishlist'],
+    'tags': ['AbbyBotProject Website'],
     'parameters': [
         {
             'name': 'body',
