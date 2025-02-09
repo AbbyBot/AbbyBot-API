@@ -6,6 +6,11 @@ def fetch_server_dashboard(guild_id, page, limit=10):
     
     try:
         with conn.cursor() as cursor:
+            # Check if guild_id exists
+            cursor.execute("SELECT COUNT(*) FROM server_settings WHERE guild_id = %s", (guild_id,))
+            if cursor.fetchone()[0] == 0:
+                return {'error': 'guild_id not found. please provide a valid guild_id.'}
+
             query = """
                     SELECT 
                         up.user_username AS 'Username',

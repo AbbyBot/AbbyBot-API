@@ -13,4 +13,7 @@ def get_server_dashboard():
         return jsonify({'error': 'Missing required parameter: guild_id'}), 400
 
     response_object = fetch_server_dashboard(guild_id, page, limit)
+    if 'error' in response_object:
+        return jsonify(response_object), 404
+
     return jsonify(response_object), 200
