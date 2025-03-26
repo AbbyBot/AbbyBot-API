@@ -1,7 +1,8 @@
 services:
   web:
-    build: .
+    build: ./AbbyBot-API/
     ports:
       - "5002:5002"
     environment:
       - FLASK_ENV=production
+    restart: always
