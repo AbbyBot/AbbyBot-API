@@ -12,16 +12,17 @@ def get_bot_info():
 
     if bot_info:
         server_count = get_server_count()
+        
         return {
             "bot_id": str(bot_info["bot_id"]),
             "bot_name": bot_info["bot_name"],
             "discriminator": bot_info["discriminator"],
             "avatar_url": bot_info["avatar_url"],
-            "banner_url": bot_info["banner_url"],
             "server_count": server_count,
             "version": bot_info["version"],
             "status": bot_info.get("status", "unknown")
         }
+    
     else:
         return None
 
