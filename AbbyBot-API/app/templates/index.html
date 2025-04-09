@@ -4,58 +4,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AbbyBot API</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-
-            text-align: center;
-            padding: 0;
-        }
-        .btn-custom {
-            margin: 10px;
-        }
-    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
 <body>
-    <div class="container">
-        <h1 class="display-4">AbbyBot API</h1>
-        <p class="lead">Welcome to the AbbyBot API. Here you will find all the necessary information to integrate and use our API efficiently.</p>
-        <div class="mt-4">
-            <a href="https://abbybotproject.com" target="_blank" class="btn btn-primary btn-custom">Project Page</a>
-            <a href="/docs" class="btn btn-secondary btn-custom">Developer Docs</a>
-            <a href="/tos" class="btn btn-info btn-custom">Terms of Service</a>
-            <button type="button" class="btn btn-success btn-custom" data-toggle="modal" data-target="#contactModal">Contact</button>
-        </div>
-    </div>
-
-    <div class="modal fade" id="contactModal" tabindex="-1" aria-labelledby="contactModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="contactModalLabel">Contact</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body text-center">
-                    <img src="https://github.com/astronautmarkus.png" alt="GitHub Profile Picture" class="img-fluid rounded-circle mb-3" width="150">
-                    <h5>Marcos Reyes</h5>
-                    <p>Developer of AbbyBot</p>
-                    <a href="https://github.com/astronautmarkus" target="_blank" class="btn btn-dark">GitHub Profile</a>
-                    <hr>
-                    <a href="https://github.com/AbbyBot" target="_blank" class="btn btn-dark">AbbyBot GitHub</a>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
+    <div class="bg-gradient-to-b from-[#c1683a] via-[#b2613d] to-[#8e4f3b] text-white h-screen flex items-center justify-center">
+        <div class="text-center">
+            <h1 class="text-5xl font-extrabold text-white">AbbyBot API</h1>
+            <p class="text-xl mt-4">Welcome to the AbbyBot API. Here you will find all the necessary information to integrate and use our API efficiently.</p>
+            <div class="mt-8 space-x-4">
+                <a href="https://abbybotproject.com" target="_blank" class="px-6 py-3 bg-blue-600 text-white rounded-lg shadow-lg hover:bg-blue-700">AbbyBotProject website</a>
+                <a href="/docs" class="px-6 py-3 bg-gray-600 text-white rounded-lg shadow-lg hover:bg-gray-700">API Docs</a>
             </div>
         </div>
     </div>
 
-    <footer class="mt-4"><a href="https://abbybotproject.com">AbbyBotProject</a> made by <a href="https://astronautmarkus.dev">astronautmarkus.dev</a></footer>
-
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <footer class="absolute bottom-3 w-full text-center text-white py-4">
+        <p class="text-sm">
+            <a href="https://abbybotproject.com" class="text-yellow-400 hover:underline font-semibold">AbbyBotProject</a> 
+            made by 
+            <a href="https://astronautmarkus.dev" class="text-red-500 hover:underline font-semibold">astronautmarkus.dev</a>
+            and
+            <a href="https://reyesandfriends.cl" class="text-cyan-300 hover:underline font-semibold">reyesandfriends.cl</a>
+        </p>
+        <p class="text-xs mt-2"></p>
+    </footer>
 </body>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const yearElement = document.querySelector("footer p.text-xs");
+        const currentYear = new Date().getFullYear();
+        if (yearElement) {
+            yearElement.textContent = `© ${currentYear} AbbyBot. All rights reserved.`;
+        }
+    });
+</script>
+
 </html>

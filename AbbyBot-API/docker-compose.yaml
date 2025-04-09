@@ -1,7 +1,6 @@
 services:
   web:
-    build: .
+    build: ./
     ports:
       - "5002:5002"
-    environment:
-      - FLASK_ENV=production
+    restart: always

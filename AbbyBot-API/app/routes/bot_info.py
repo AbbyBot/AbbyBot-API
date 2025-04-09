@@ -10,17 +10,10 @@ bot_info_bp = Blueprint('bot_info', __name__)
     'tags': ['Health'],
     'responses': {
         200: {
-            'description': 'Bot information retrieved successfully',
+            'description': 'Bot information updated successfully',
             'examples': {
                 'application/json': {
-                    "bot_id": "123456789",
-                    "bot_name": "AbbyBot",
-                    "discriminator": "0001",
-                    "avatar_url": "http://example.com/avatar.png",
-                    "banner_url": "http://example.com/banner.png",
-                    "server_count": 10,
-                    "version": "1.0.0",
-                    "status": "online"
+                    "message": "Bot information updated successfully"
                 }
             }
         },
@@ -33,10 +26,11 @@ bot_info_bp = Blueprint('bot_info', __name__)
             }
         },
         400: {
-            'description': 'Invalid status value',
+            'description': 'Invalid input data',
             'examples': {
                 'application/json': {
-                    "error": "Invalid status value"
+                    "error": "Invalid input data",
+                    "modifiable_fields": ["avatar_url", "bot_id", "bot_name", "discriminator", "server_count", "status", "version"]
                 }
             }
         },
@@ -50,7 +44,6 @@ bot_info_bp = Blueprint('bot_info', __name__)
         }
     }
 })
-
 def bot_info():
     if request.method == 'GET':
         bot_info = get_bot_info()
@@ -61,14 +54,27 @@ def bot_info():
 
     elif request.method == 'POST':
         try:
-            data = request.json
-            bot_status = data.get("status")
-            
-            if bot_status not in ["online", "offline"]:
-                return jsonify({"error": "Invalid status value"}), 400
+            if not request.is_json:
+                return jsonify({"error": "Unsupported Media Type: Content-Type must be 'application/json'"}), 415
 
-            if update_bot_status(bot_status):
-                return jsonify({"message": f"Bot status updated to {bot_status}"}), 200
+            data = request.json
+            if not data:
+                return jsonify({
+                    "error": "Invalid input data",
+                    "modifiable_fields": ["avatar_url", "bot_id", "bot_name", "discriminator", "server_count", "status", "version"]
+                }), 400
+
+            allowed_fields = ["avatar_url", "bot_id", "bot_name", "discriminator", "server_count", "status", "version"]
+            update_data = {key: value for key, value in data.items() if key in allowed_fields}
+
+            if not update_data:
+                return jsonify({
+                    "error": "Invalid input data",
+                    "modifiable_fields": allowed_fields
+                }), 400
+
+            if update_bot_status(update_data):
+                return jsonify({"message": "Bot information updated successfully"}), 200
             else:
                 return jsonify({"error": "No bot information found"}), 404
         except Exception as e:
