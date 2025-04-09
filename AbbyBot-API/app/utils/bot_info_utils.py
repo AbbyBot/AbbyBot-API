@@ -26,7 +26,7 @@ def get_bot_info():
     else:
         return None
 
-def update_bot_status(bot_status):
+def update_bot_status(update_data):
     conn = get_db_connection(os.getenv('DB_API_NAME'))
     cursor = conn.cursor(dictionary=True)
     cursor.execute("SELECT bot_id FROM bot_info LIMIT 1")
@@ -34,12 +34,13 @@ def update_bot_status(bot_status):
 
     if bot_info:
         bot_id = str(bot_info["bot_id"])
-        update_query = """
+        set_clause = ", ".join([f"{key} = %s" for key in update_data.keys()])
+        update_query = f"""
             UPDATE bot_info 
-            SET status = %s 
+            SET {set_clause} 
             WHERE bot_id = %s
         """
-        cursor.execute(update_query, (bot_status, bot_id))
+        cursor.execute(update_query, (*update_data.values(), bot_id))
         conn.commit()
         cursor.close()
         conn.close()
